@@ -115,5 +115,8 @@ def getData():
     retrievedData = pd.concat(retrievedData)
     return retrievedData
 
-retrievedData = getData()
-retrievedData.to_csv("scraping/ryanair.csv", index=False)
+def main():
+    retrievedData = getData()
+    retrievedData.to_csv("scraping/ryanair.csv", index=False)
+if __name__ == "__main__":
+    main()
