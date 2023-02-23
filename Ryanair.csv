@@ -1,0 +1,105 @@
+,origin,originName,destination,destinationName,dateOut,flightNumber,duration,faresLeft,infantsLeft,fareType,fareAmount,fareCount,fareHasDiscount,farePublishedFare,fareDiscountInPercent,fareHasPromoDiscount,fareDiscountAmount,fareHasBogof
+0,BRU,Brussels,AGP,Malaga,2023-10-01T00:00:00.000,FR 2923,02:55,-1,18,ADT,93.41,1,False,93.41,0,False,0.0,False
+1,BRU,Brussels,AGP,Malaga,2023-10-02T00:00:00.000,FR 2923,02:50,-1,18,ADT,73.99,1,False,73.99,0,False,0.0,False
+2,AGP,Malaga,BRU,Brussels,2023-04-02T00:00:00.000,FR 2924,02:50,-1,16,ADT,24.99,1,False,24.99,0,False,0.0,False
+3,AGP,Malaga,BRU,Brussels,2023-04-03T00:00:00.000,FR 2924,02:50,-1,15,ADT,70.39,1,False,70.39,0,False,0.0,False
+0,BRU,Brussels,PMI,Mallorca,2023-09-29T00:00:00.000,FR 2915,02:15,-1,18,ADT,132.54,1,False,132.54,0,False,0.0,False
+1,BRU,Brussels,PMI,Mallorca,2023-10-02T00:00:00.000,FR 2915,02:15,-1,18,ADT,44.99,1,False,44.99,0,False,0.0,False
+2,PMI,Mallorca,BRU,Brussels,2023-03-31T00:00:00.000,FR 2916,02:20,-1,18,ADT,31.79,1,False,31.79,0,False,0.0,False
+3,PMI,Mallorca,BRU,Brussels,2023-04-03T00:00:00.000,FR 2916,02:20,3,17,ADT,35.4,1,False,35.4,0,False,0.0,False
+0,CRL,Brussels (Charleroi),CFU,Corfu,2023-10-01T00:00:00.000,FR 6251,02:40,-1,18,ADT,57.05,1,False,57.05,0,False,0.0,False
+1,CFU,Corfu,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 6252,02:50,4,18,ADT,32.99,1,False,32.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),HER,Heraklion Crete,2023-09-30T00:00:00.000,FR 7986,03:25,-1,18,ADT,156.69,1,False,156.69,0,False,0.0,False
+1,CRL,Brussels (Charleroi),HER,Heraklion Crete,2023-10-03T00:00:00.000,FR 7986,03:25,-1,18,ADT,105.71,1,False,105.71,0,False,0.0,False
+2,HER,Heraklion Crete,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 7987,03:45,-1,18,ADT,34.99,1,False,34.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),RHO,Rhodes,2023-09-29T00:00:00.000,FR 8577,03:35,2,18,ADT,67.13,1,False,67.13,0,False,0.0,False
+1,CRL,Brussels (Charleroi),RHO,Rhodes,2023-10-02T00:00:00.000,FR 8577,03:35,2,18,ADT,99.53,1,False,99.53,0,False,0.0,False
+2,RHO,Rhodes,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 8576,03:50,2,16,ADT,13.99,1,False,13.99,0,False,0.0,False
+3,RHO,Rhodes,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 8576,03:50,2,17,ADT,29.99,1,False,29.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),BDS,Brindisi,2023-09-29T00:00:00.000,FR 7737,02:25,-1,18,ADT,60.99,1,False,60.99,0,False,0.0,False
+1,CRL,Brussels (Charleroi),BDS,Brindisi,2023-10-01T00:00:00.000,FR 7737,02:25,-1,18,ADT,81.99,1,False,81.99,0,False,0.0,False
+2,CRL,Brussels (Charleroi),BDS,Brindisi,2023-10-02T00:00:00.000,FR 7737,02:25,-1,18,ADT,38.99,1,False,38.99,0,False,0.0,False
+3,CRL,Brussels (Charleroi),BDS,Brindisi,2023-10-03T00:00:00.000,FR 7737,02:25,-1,18,ADT,70.99,1,False,70.99,0,False,0.0,False
+4,BDS,Brindisi,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 7738,02:30,-1,16,ADT,16.99,1,False,16.99,0,False,0.0,False
+5,BDS,Brindisi,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 7738,02:30,1,16,ADT,21.99,1,False,21.99,0,False,0.0,False
+6,BDS,Brindisi,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 7738,02:30,-1,18,ADT,21.99,1,False,21.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),NAP,Naples,2023-09-29T00:00:00.000,FR 1302,02:15,2,18,ADT,59.04,1,False,59.04,0,False,0.0,False
+1,CRL,Brussels (Charleroi),NAP,Naples,2023-09-29T00:00:00.000,FR 1310,02:15,-1,18,ADT,41.99,1,False,41.99,0,False,0.0,False
+2,CRL,Brussels (Charleroi),NAP,Naples,2023-09-30T00:00:00.000,FR 1302,02:15,1,18,ADT,73.9,1,False,73.9,0,False,0.0,False
+3,CRL,Brussels (Charleroi),NAP,Naples,2023-10-01T00:00:00.000,FR 1302,02:15,2,18,ADT,59.04,1,False,59.04,0,False,0.0,False
+4,CRL,Brussels (Charleroi),NAP,Naples,2023-10-02T00:00:00.000,FR 1302,02:15,-1,18,ADT,74.99,1,False,74.99,0,False,0.0,False
+5,CRL,Brussels (Charleroi),NAP,Naples,2023-10-02T00:00:00.000,FR 1310,02:15,-1,18,ADT,41.99,1,False,41.99,0,False,0.0,False
+6,CRL,Brussels (Charleroi),NAP,Naples,2023-10-03T00:00:00.000,FR 1302,02:15,5,18,ADT,47.99,1,False,47.99,0,False,0.0,False
+7,NAP,Naples,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 1303,02:25,-1,18,ADT,19.99,1,False,19.99,0,False,0.0,False
+8,NAP,Naples,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 1303,02:25,-1,17,ADT,24.99,1,False,24.99,0,False,0.0,False
+9,NAP,Naples,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 1311,02:25,3,15,ADT,24.99,1,False,24.99,0,False,0.0,False
+10,NAP,Naples,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 1303,02:25,5,17,ADT,24.99,1,False,24.99,0,False,0.0,False
+11,NAP,Naples,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 1303,02:25,-1,18,ADT,24.99,1,False,24.99,0,False,0.0,False
+12,NAP,Naples,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 1311,02:25,-1,18,ADT,33.32,1,False,33.32,0,False,0.0,False
+13,NAP,Naples,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 1303,02:25,5,17,ADT,110.61,1,False,110.61,0,False,0.0,False
+0,CRL,Brussels (Charleroi),PMO,Palermo,2023-09-29T00:00:00.000,FR 6269,02:30,-1,17,ADT,99.99,1,False,99.99,0,False,0.0,False
+1,CRL,Brussels (Charleroi),PMO,Palermo,2023-09-30T00:00:00.000,FR 6269,02:29,-1,18,ADT,55.99,1,False,55.99,0,False,0.0,False
+2,CRL,Brussels (Charleroi),PMO,Palermo,2023-10-02T00:00:00.000,FR 6269,02:30,-1,18,ADT,70.13,1,False,70.13,0,False,0.0,False
+3,CRL,Brussels (Charleroi),PMO,Palermo,2023-10-03T00:00:00.000,FR 6269,02:30,-1,18,ADT,85.99,1,False,85.99,0,False,0.0,False
+4,PMO,Palermo,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 6268,02:35,-1,16,ADT,24.99,1,False,24.99,0,False,0.0,False
+5,PMO,Palermo,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 6268,02:35,-1,15,ADT,24.99,1,False,24.99,0,False,0.0,False
+6,PMO,Palermo,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 6268,02:35,-1,18,ADT,24.99,1,False,24.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),FAO,Faro,2023-09-29T00:00:00.000,FR 2941,02:55,-1,18,ADT,50.99,1,False,50.99,0,False,0.0,False
+1,CRL,Brussels (Charleroi),FAO,Faro,2023-09-29T00:00:00.000,FR 6312,02:55,-1,18,ADT,88.74,1,False,88.74,0,False,0.0,False
+2,CRL,Brussels (Charleroi),FAO,Faro,2023-09-30T00:00:00.000,FR 2941,02:55,2,18,ADT,116.69,1,False,116.69,0,False,0.0,False
+3,CRL,Brussels (Charleroi),FAO,Faro,2023-10-01T00:00:00.000,FR 2941,02:55,1,18,ADT,88.74,1,False,88.74,0,False,0.0,False
+4,CRL,Brussels (Charleroi),FAO,Faro,2023-10-01T00:00:00.000,FR 6312,02:55,-1,18,ADT,67.99,1,False,67.99,0,False,0.0,False
+5,CRL,Brussels (Charleroi),FAO,Faro,2023-10-02T00:00:00.000,FR 2941,02:55,-1,18,ADT,65.87,1,False,65.87,0,False,0.0,False
+6,CRL,Brussels (Charleroi),FAO,Faro,2023-10-03T00:00:00.000,FR 2941,02:55,-1,18,ADT,75.7,1,False,75.7,0,False,0.0,False
+7,CRL,Brussels (Charleroi),FAO,Faro,2023-10-03T00:00:00.000,FR 6312,02:55,-1,18,ADT,67.99,1,False,67.99,0,False,0.0,False
+8,FAO,Faro,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 2940,02:50,-1,18,ADT,16.99,1,False,16.99,0,False,0.0,False
+9,FAO,Faro,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 2940,02:50,-1,18,ADT,19.99,1,False,19.99,0,False,0.0,False
+10,FAO,Faro,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 6313,02:50,-1,17,ADT,32.07,1,False,32.07,0,False,0.0,False
+11,FAO,Faro,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 2940,02:50,-1,18,ADT,24.99,1,False,24.99,0,False,0.0,False
+12,FAO,Faro,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 6313,02:50,1,18,ADT,75.7,1,False,75.7,0,False,0.0,False
+13,FAO,Faro,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 2940,02:50,3,17,ADT,77.09,1,False,77.09,0,False,0.0,False
+0,CRL,Brussels (Charleroi),ALC,Alicante,2023-09-29T00:00:00.000,FR 3534,02:25,-1,18,ADT,67.12,1,False,67.12,0,False,0.0,False
+1,CRL,Brussels (Charleroi),ALC,Alicante,2023-09-29T00:00:00.000,FR 9053,02:25,5,18,ADT,67.12,1,False,67.12,0,False,0.0,False
+2,CRL,Brussels (Charleroi),ALC,Alicante,2023-09-30T00:00:00.000,FR 3534,02:25,1,18,ADT,73.24,1,False,73.24,0,False,0.0,False
+3,CRL,Brussels (Charleroi),ALC,Alicante,2023-10-01T00:00:00.000,FR 3534,02:25,1,18,ADT,67.12,1,False,67.12,0,False,0.0,False
+4,CRL,Brussels (Charleroi),ALC,Alicante,2023-10-01T00:00:00.000,FR 9053,02:25,-1,18,ADT,75.7,1,False,75.7,0,False,0.0,False
+5,CRL,Brussels (Charleroi),ALC,Alicante,2023-10-02T00:00:00.000,FR 3534,02:25,-1,18,ADT,67.99,1,False,67.99,0,False,0.0,False
+6,CRL,Brussels (Charleroi),ALC,Alicante,2023-10-03T00:00:00.000,FR 3534,02:25,5,18,ADT,57.59,1,False,57.59,0,False,0.0,False
+7,CRL,Brussels (Charleroi),ALC,Alicante,2023-10-03T00:00:00.000,FR 9053,02:25,-1,18,ADT,57.05,1,False,57.05,0,False,0.0,False
+8,ALC,Alicante,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 9052,02:30,-1,18,ADT,20.99,1,False,20.99,0,False,0.0,False
+9,ALC,Alicante,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 3533,02:30,1,18,ADT,71.49,1,False,71.49,0,False,0.0,False
+10,ALC,Alicante,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 3533,02:30,-1,18,ADT,63.68,1,False,63.68,0,False,0.0,False
+11,ALC,Alicante,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 9052,02:30,-1,17,ADT,74.99,1,False,74.99,0,False,0.0,False
+12,ALC,Alicante,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 3533,02:30,-1,18,ADT,67.99,1,False,67.99,0,False,0.0,False
+13,ALC,Alicante,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 3533,02:30,-1,18,ADT,66.49,1,False,66.49,0,False,0.0,False
+14,ALC,Alicante,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 3533,02:30,5,16,ADT,120.99,1,False,120.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),IBZ,Ibiza,2023-09-29T00:00:00.000,FR 6456,02:25,-1,16,ADT,84.55,1,False,84.55,0,False,0.0,False
+1,CRL,Brussels (Charleroi),IBZ,Ibiza,2023-10-01T00:00:00.000,FR 6456,02:25,4,17,ADT,73.9,1,False,73.9,0,False,0.0,False
+2,CRL,Brussels (Charleroi),IBZ,Ibiza,2023-10-03T00:00:00.000,FR 6456,02:25,1,18,ADT,52.01,1,False,52.01,0,False,0.0,False
+3,IBZ,Ibiza,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 6457,02:20,-1,18,ADT,16.99,1,False,16.99,0,False,0.0,False
+4,IBZ,Ibiza,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 6457,02:20,-1,17,ADT,19.99,1,False,19.99,0,False,0.0,False
+5,IBZ,Ibiza,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 6457,02:20,-1,18,ADT,45.48,1,False,45.48,0,False,0.0,False
+0,CRL,Brussels (Charleroi),AGP,Malaga,2023-09-29T00:00:00.000,FR 1928,02:45,1,18,ADT,116.69,1,False,116.69,0,False,0.0,False
+1,CRL,Brussels (Charleroi),AGP,Malaga,2023-09-29T00:00:00.000,FR 1916,02:45,-1,15,ADT,77.09,1,False,77.09,0,False,0.0,False
+2,CRL,Brussels (Charleroi),AGP,Malaga,2023-09-30T00:00:00.000,FR 1916,02:45,3,18,ADT,101.39,1,False,101.39,0,False,0.0,False
+3,CRL,Brussels (Charleroi),AGP,Malaga,2023-10-01T00:00:00.000,FR 1916,02:45,-1,18,ADT,65.87,1,False,65.87,0,False,0.0,False
+4,CRL,Brussels (Charleroi),AGP,Malaga,2023-10-02T00:00:00.000,FR 1916,02:45,5,18,ADT,58.99,1,False,58.99,0,False,0.0,False
+5,CRL,Brussels (Charleroi),AGP,Malaga,2023-10-03T00:00:00.000,FR 1916,02:45,-1,18,ADT,57.59,1,False,57.59,0,False,0.0,False
+6,AGP,Malaga,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 1915,02:45,1,18,ADT,42.15,1,False,42.15,0,False,0.0,False
+7,AGP,Malaga,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 1929,02:45,4,15,ADT,24.99,1,False,24.99,0,False,0.0,False
+8,AGP,Malaga,CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 1915,02:45,-1,18,ADT,73.37,1,True,78.99,0,False,5.62,False
+9,AGP,Malaga,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 1915,02:50,2,16,ADT,115.79,1,False,115.79,0,False,0.0,False
+10,AGP,Malaga,CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 1915,02:45,3,17,ADT,87.24,1,False,87.24,0,False,0.0,False
+11,AGP,Malaga,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 1915,02:45,-1,18,ADT,58.99,1,False,58.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),PMI,Mallorca,2023-09-30T00:00:00.000,FR 7831,02:10,-1,17,ADT,134.64,1,False,134.64,0,False,0.0,False
+1,CRL,Brussels (Charleroi),PMI,Mallorca,2023-10-02T00:00:00.000,FR 7831,02:10,-1,18,ADT,67.12,1,False,67.12,0,False,0.0,False
+2,CRL,Brussels (Charleroi),PMI,Mallorca,2023-10-03T00:00:00.000,FR 7831,02:10,-1,18,ADT,41.09,1,False,41.09,0,False,0.0,False
+3,PMI,Mallorca,CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 7830,02:20,-1,19,ADT,16.99,1,False,16.99,0,False,0.0,False
+4,PMI,Mallorca,CRL,Brussels (Charleroi),2023-04-01T00:00:00.000,FR 7830,02:20,-1,17,ADT,43.62,1,False,43.62,0,False,0.0,False
+5,PMI,Mallorca,CRL,Brussels (Charleroi),2023-04-03T00:00:00.000,FR 7830,02:20,2,16,ADT,24.99,1,False,24.99,0,False,0.0,False
+0,CRL,Brussels (Charleroi),TFS,Tenerife (South),2023-09-29T00:00:00.000,FR 563,04:35,-1,18,ADT,124.99,1,False,124.99,0,False,0.0,False
+1,CRL,Brussels (Charleroi),TFS,Tenerife (South),2023-10-01T00:00:00.000,FR 563,04:35,-1,18,ADT,156.69,1,False,156.69,0,False,0.0,False
+2,CRL,Brussels (Charleroi),TFS,Tenerife (South),2023-10-03T00:00:00.000,FR 563,04:35,2,18,ADT,120.17,1,False,120.17,0,False,0.0,False
+3,TFS,Tenerife (South),CRL,Brussels (Charleroi),2023-03-30T00:00:00.000,FR 564,04:15,2,17,ADT,155.55,1,False,155.55,0,False,0.0,False
+4,TFS,Tenerife (South),CRL,Brussels (Charleroi),2023-03-31T00:00:00.000,FR 564,04:15,-1,17,ADT,147.64,1,False,147.64,0,False,0.0,False
+5,TFS,Tenerife (South),CRL,Brussels (Charleroi),2023-04-02T00:00:00.000,FR 564,04:15,4,18,ADT,96.95,1,True,108.99,0,False,12.04,False
