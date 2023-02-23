@@ -10,8 +10,7 @@ def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0,
     baseUrl = f"{baseUrl}ADT={adt}&CHD={chd}&DateIn={dateIn}&DateOut={dateOut}&Destination={destination}&Disc={disc}&INF={inf}&Origin={origin}&TEEN={teen}&promoCode={promoCode}&IncludeConnectingFlights={includeConnectingFlights}&FlexDaysBeforeOut={flexDaysBeforeOut}&FlexDaysOut={flexDaysOut}&FlexDaysBeforeIn={flexDaysBeforeIn}&FlexDaysIn={flexDaysIn}&RoundTrip={roundTrip}&ToUs={toUs}"
     return baseUrl
 
-def json_to_dataframe(json_string):
-    json_data = json.loads(json_string)    
+def object_to_dataframe(json_data):
     output_data = []
     for trip in json_data['trips']:
         for flight in trip['dates']:
@@ -51,7 +50,7 @@ def getData():
             soup = BeautifulSoup(page.content, "lxml")
             result = soup.find("p").text
             json_object = json.loads(result)
-            retrievedData.append(json_to_dataframe(json.dumps(json_object)))
+            retrievedData.append(object_to_dataframe(json_object))
     retrievedData = pd.concat(retrievedData)
     return retrievedData
 
