@@ -12,47 +12,108 @@ def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0,
 
 def object_to_dataframe(json_data):
     output_data = []
+    termsOfUse = json_data['termsOfUse']
+    currency = json_data['currency']
+    currPrecision = json_data['currPrecision']
+    # tripType = trip['tripType']
+    # upgradeType = trip['upgradeType']
+    serverTimeUTC = json_data['serverTimeUTC']
     for trip in json_data['trips']:
-        for flight in trip['dates']:
-            for flight_details in flight['flights']:
-                flight_info = {}
-                flight_info['origin'] = trip['origin']
-                flight_info['originName'] = trip['originName']
-                flight_info['destination'] = trip['destination']
-                flight_info['destinationName'] = trip['destinationName']
-                flight_info['routeGroup'] = trip['routeGroup']
-                flight_info['tripType'] = trip['tripType']
-                flight_info['upgradeType'] = trip['upgradeType']
-                flight_info['dateOut'] = flight['dateOut']
-                flight_info['flightNumber'] = flight_details['flightNumber']
-                flight_info['faresLeft'] = flight_details['faresLeft']
-                flight_info['infantsLeft'] = flight_details['infantsLeft']
-                flight_info['fareClass'] = flight_details['regularFare']['fareClass']
-                flight_info['amount'] = flight_details['regularFare']['fares'][0]['amount']
-                output_data.append(flight_info)
+        origin = trip['origin']
+        originName = trip['originName']
+        destination = trip['destination']
+        destinationName = trip['destinationName']
+        routeGroup = trip['routeGroup']
+        tripType = trip['tripType']
+        upgradeType = trip['upgradeType']
+        for dat in trip['dates']:
+            dateOut = dat['dateOut']
+            flights = dat['flights']
+            for flight in flights:
+                faresLeft = flight['faresLeft']
+                flightKey = flight['flightKey']
+                infantLeft = flight['infantLeft'] if 'infantLeft' in flight else None
+                operatedBy = flight['operatedBy']
+                flightNumber = flight['flightNumber']
+                duration = flight['duration']
+                timeUTCStart = flight['timeUTC'][0]
+                timeUTCEnd = flight['timeUTC'][1]
+                timeStart = flight['time'][0]
+                timeEnd = flight['time'][1]
+                segmentAmnt = len(flight['segments'])
+                fares = flight["regularFare"]['fares'] if 'fares' in flight["regularFare"] else None
+                fareKey = flight["regularFare"]['fareKey']
+                fareClass = flight["regularFare"]['fareClass']
+                for fare in fares:
+                    fareType = fare['type']
+                    fareAmount = fare['amount']
+                    fareCount = fare['count']
+                    fareHasDiscount = fare['hasDiscount']
+                    farePublishedFare = fare['publishedFare']
+                    fareDiscountInPercent = fare['discountInPercent']
+                    fareHasPromoDiscount = fare['hasPromoDiscount']
+                    fareDiscountAmount = fare['discountAmount']
+                    fareHasBogof = fare['hasBogof']
+                    output_data.append({
+                        "termsOfUse": termsOfUse,
+                        "currency": currency,
+                        "currPrecision": currPrecision,
+                        "serverTimeUTC": serverTimeUTC,
+                        "origin": origin,
+                        "originName": originName,
+                        "destination": destination,
+                        "destinationName": destinationName,
+                        "routeGroup": routeGroup,
+                        "tripType": tripType,
+                        "upgradeType": upgradeType,
+                        "dateOut": dateOut,
+                        "faresLeft": faresLeft,
+                        "flightKey": flightKey,
+                        "infantLeft": infantLeft,
+                        "operatedBy": operatedBy,
+                        "flightNumber": flightNumber,
+                        "duration": duration,
+                        "timeUTCStart": timeUTCStart,
+                        "timeUTCEnd": timeUTCEnd,
+                        "timeStart": timeStart,
+                        "timeEnd": timeEnd,
+                        "segmentAmnt": segmentAmnt,
+                        "fareType": fareType,
+                        "fareKey": fareKey,
+                        "fareClass": fareClass,
+                        "fareAmount": fareAmount,
+                        "fareCount": fareCount,
+                        "fareHasDiscount": fareHasDiscount,
+                        "farePublishedFare": farePublishedFare,
+                        "fareDiscountInPercent": fareDiscountInPercent,
+                        "fareHasPromoDiscount": fareHasPromoDiscount,
+                        "fareDiscountAmount": fareDiscountAmount,
+                        "fareHasBogof": fareHasBogof
+                    })
     return pd.DataFrame(output_data)
 
 def getData():
     DESTINATIONS = ['CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP', 'PMI', 'TFS']
     ORIGINS = ['BRU', 'CRL']
-    dateIn = "2023-04-01"
-    dateOut = "2023-10-01"
     retrievedData = []
-    
-    amnt = len(DESTINATIONS) * len(ORIGINS)
+    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
+    # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
+    dates = dates.strftime("%Y-%m-%d").tolist()
+    amnt = len(DESTINATIONS) * len(ORIGINS) * len(dates)
     counter = 0
-    for origin in ORIGINS:
-        for destination in DESTINATIONS:
-            counter += 1
-            print(f"Request {counter}/{amnt}", end="\r")
-            URL = createUrl(dateIn=dateIn, dateOut=dateOut, destination=destination, origin=origin)
-            page = requests.get(URL)
-            soup = BeautifulSoup(page.content, "lxml")
-            result = soup.find("p").text
-            json_object = json.loads(result)
-            retrievedData.append(object_to_dataframe(json_object))
+    for dateOut in dates:
+        for origin in ORIGINS:
+            for destination in DESTINATIONS:
+                counter += 1
+                print(f"Request {counter}/{amnt}", end="\r")
+                URL = createUrl(dateIn="", dateOut=dateOut, destination=destination, origin=origin)
+                page = requests.get(URL)
+                soup = BeautifulSoup(page.content, "lxml")
+                result = soup.find("p").text
+                json_object = json.loads(result)
+                retrievedData.append(object_to_dataframe(json_object))
     retrievedData = pd.concat(retrievedData)
     return retrievedData
 
 retrievedData = getData()
-retrievedData.to_csv("Ryanair.csv")
+retrievedData.to_csv("scraping/ryanair.csv", index=False)
