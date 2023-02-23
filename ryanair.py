@@ -10,48 +10,28 @@ def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0,
     baseUrl = f"{baseUrl}ADT={adt}&CHD={chd}&DateIn={dateIn}&DateOut={dateOut}&Destination={destination}&Disc={disc}&INF={inf}&Origin={origin}&TEEN={teen}&promoCode={promoCode}&IncludeConnectingFlights={includeConnectingFlights}&FlexDaysBeforeOut={flexDaysBeforeOut}&FlexDaysOut={flexDaysOut}&FlexDaysBeforeIn={flexDaysBeforeIn}&FlexDaysIn={flexDaysIn}&RoundTrip={roundTrip}&ToUs={toUs}"
     return baseUrl
 
-
-def json_to_dataframe(json_object):
-    data = json.loads(json_object)
-    trips = data['trips']
-    dataframes = []
-    for trip in trips:
-        dates = trip['dates']
-        for date in dates:
-            flights = date['flights']
-            for flight in flights:
-                flight_data = {
-                    'origin': trip['origin'],
-                    'originName': trip['originName'],
-                    'destination': trip['destination'],
-                    'destinationName': trip['destinationName'],
-                    'dateOut': date['dateOut'],
-                    'flightNumber': flight['flightNumber'],
-                    'duration': flight['duration'],
-                    'faresLeft': flight['faresLeft'] if 'faresLeft' in flight else None,
-                    'infantsLeft': flight['infantsLeft'] if 'infantsLeft' in flight else None,
-                }
-                if 'regularFare' in flight:
-                    fares = flight['regularFare']['fares']
-                    for fare in fares:
-                        fare_data = flight_data.copy()
-                        fare_data.update({
-                            'fareType': fare['type'],
-                            'fareAmount': fare['amount'],
-                            'fareCount': fare['count'],
-                            'fareHasDiscount': fare['hasDiscount'],
-                            'farePublishedFare': fare['publishedFare'],
-                            'fareDiscountInPercent': fare['discountInPercent'],
-                            'fareHasPromoDiscount': fare['hasPromoDiscount'],
-                            'fareDiscountAmount': fare['discountAmount'],
-                            'fareHasBogof': fare['hasBogof'],
-                        })
-                        dataframes.append(pd.DataFrame(fare_data, index=[0]))
-                else:
-                    dataframes.append(pd.DataFrame(flight_data, index=[0]))
-    
-    return pd.concat(dataframes, ignore_index=True) if len(dataframes) > 0 else pd.DataFrame()
-
+def json_to_dataframe(json_string):
+    json_data = json.loads(json_string)    
+    output_data = []
+    for trip in json_data['trips']:
+        for flight in trip['dates']:
+            for flight_details in flight['flights']:
+                flight_info = {}
+                flight_info['origin'] = trip['origin']
+                flight_info['originName'] = trip['originName']
+                flight_info['destination'] = trip['destination']
+                flight_info['destinationName'] = trip['destinationName']
+                flight_info['routeGroup'] = trip['routeGroup']
+                flight_info['tripType'] = trip['tripType']
+                flight_info['upgradeType'] = trip['upgradeType']
+                flight_info['dateOut'] = flight['dateOut']
+                flight_info['flightNumber'] = flight_details['flightNumber']
+                flight_info['faresLeft'] = flight_details['faresLeft']
+                flight_info['infantsLeft'] = flight_details['infantsLeft']
+                flight_info['fareClass'] = flight_details['regularFare']['fareClass']
+                flight_info['amount'] = flight_details['regularFare']['fares'][0]['amount']
+                output_data.append(flight_info)
+    return pd.DataFrame(output_data)
 
 def getData():
     DESTINATIONS = ['CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP', 'PMI', 'TFS']
@@ -76,5 +56,4 @@ def getData():
     return retrievedData
 
 retrievedData = getData()
-print(retrievedData)
 retrievedData.to_csv("Ryanair.csv")
