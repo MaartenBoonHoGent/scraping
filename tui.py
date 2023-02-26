@@ -24,30 +24,30 @@ def createUrl(flyingFrom, flyingTo, depDate, adults=1, children=0, childAge="", 
 
 
 def getFlightData():
-    DESTINATION = ['CFU']
+    DESTINATION = ['CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP', 'PMI', 'TFS']
+    TEST =['CFU']
     ORIGINS =['OST','ANR','BRU','LGG']
     dateIn = date(2023, 4, 1)
     dateOut = date(2023, 4, 1)
     retrieveData = []
     d = dateOut-dateIn
 
-
     amnt = len(DESTINATION) * len(ORIGINS)
-    counter = 0
     for i in range(d.days+1):
+        counter = 0
         day=dateIn+timedelta(days=i)
         for origin in ORIGINS:
-            for destination in DESTINATION:
+            for destination in TEST:
                 counter += 1
                 print(f"Date = {day} Request {counter}/{amnt}", end="\r")
                 URL = createUrl(depDate=day, flyingFrom=origin, flyingTo=destination)
                 
                 options = webdriver.ChromeOptions()
-                options.add_experimental_option("detach", True)
+                #options.add_experimental_option("detach", True)
                 options.add_argument('--ignore-certificate-errors')
                 driver_service = Service(executable_path=PATH)
                 driver = webdriver.Chrome(service=driver_service,options=options)
-                driver.maximize_window()
+                #driver.maximize_window()
                 driver.implicitly_wait(25)
                 driver.get(URL)
                 driver.find_element(By.CSS_SELECTOR, "#cmCloseBanner").click()
