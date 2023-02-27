@@ -32,6 +32,12 @@ time.sleep(30)
 
 #DIT WERKT NOG NIET
 #klikken op de "enkele reis" knop en opnieuw laden
-l = driver.find_element(By.CSS_SELECTOR, "input.input.0")
+#pelle testing things
+#l = driver.find_element(By.CSS_SELECTOR, "input.0")
+#l = driver.find_element_by_name("tripType")
+
+"input O ng-untouched ng-pristine ng-valid" 
 if(l): print("gelukt")
 #driver.execute_script("arguments[0].click()", l)
+
+
