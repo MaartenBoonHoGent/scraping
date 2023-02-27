@@ -1,6 +1,7 @@
 #proberen vanaf gewenste pagina vertrekken naar info pagina maar zonder succes 2U 20min
 
 import requests
+import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
@@ -19,11 +20,18 @@ options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
 driver_service = Service(executable_path=PATH)
 driver = webdriver.Chrome(service=driver_service,options=options)
-#driver.implicitly_wait(25)
 driver.get(url)
 
-#l = driver.find_element(By.CSS_SELECTOR, "button.button-primary")
-#driver.execute_script("arguments[0].click()", l)
-
+#klikken voor naar juiste pagina te gaan  
 r = driver.find_element(By.CSS_SELECTOR, "div.bp-mock p a.button")
 driver.execute_script("arguments[0].click()", r)
+
+
+#wachten tot pagina laad
+time.sleep(30)
+
+#DIT WERKT NOG NIET
+#klikken op de "enkele reis" knop en opnieuw laden
+l = driver.find_element(By.CSS_SELECTOR, "input.input.0")
+if(l): print("gelukt")
+#driver.execute_script("arguments[0].click()", l)
