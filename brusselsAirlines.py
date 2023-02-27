@@ -25,5 +25,5 @@ driver.get(url)
 #l = driver.find_element(By.CSS_SELECTOR, "button.button-primary")
 #driver.execute_script("arguments[0].click()", l)
 
-r = driver.find_element(By.CSS_SELECTOR, "div.button-wrapper a.hidden")
+r = driver.find_element(By.CSS_SELECTOR, "div.bp-mock p a.button")
 driver.execute_script("arguments[0].click()", r)
