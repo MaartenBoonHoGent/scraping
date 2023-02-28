@@ -28,16 +28,18 @@ driver.execute_script("arguments[0].click()", r)
 
 
 #wachten tot pagina laad
-time.sleep(30)
+time.sleep(40)
 
 #DIT WERKT NOG NIET
 #klikken op de "enkele reis" knop en opnieuw laden
 #pelle testing things
 #l = driver.find_element(By.CSS_SELECTOR, "input.0")
 #l = driver.find_element_by_name("tripType")
+#l =driver.find_element(By.CLASS_NAME("input O ng-untouched ng-pristine ng-valid"));
 
-"input O ng-untouched ng-pristine ng-valid" 
+l = driver.find_element(By.XPATH(".//label[@class='label ng-star-inserted']/input[1][@class='input O ng-untouched ng-pristine ng-valid']"))
+
+#"input O ng-untouched ng-pristine ng-valid" 
 if(l): print("gelukt")
 #driver.execute_script("arguments[0].click()", l)
-
 
