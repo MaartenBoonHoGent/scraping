@@ -35,6 +35,7 @@ def createUrl(flyingFrom,
 
 def object_to_dataframe(json_data):
     lijst = []
+    ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
     for data in json_data['page']['search']['resultList']['outboundFlights']:
         arrivalAirportCode = data['arrivalAirportCode']
         arrivalAirportName = data['arrivalAirportName']
@@ -62,7 +63,8 @@ def object_to_dataframe(json_data):
         currentPrice = data['price']['currentPrice']
         currentPricePerPerson = data['price']['currentPricePerPerson']
 
-        lijst.append({'arrivalAirportCode': arrivalAirportCode, 'arrivalAirportName': arrivalAirportName, 'arrivalDate': arrivalDate,
+        if departureAirportCode in ORIGINS: 
+            lijst.append({'arrivalAirportCode': arrivalAirportCode, 'arrivalAirportName': arrivalAirportName, 'arrivalDate': arrivalDate,
                       'arrivalTime': arrivalTime, 'carrierCode': carrierCode, 'daysToDeparture': daysToDeparture, 'departureAirportCode': departureAirportCode,
                       'departureAirportName': departureAirportName, 'departureDate': departureDate, 'departureDateDifference': departureDateDifference,
                       'departureMonth': departureMonth, 'departureSeason': departureSeason, 'departureTime': departureTime, 'departureYear': departureYear,

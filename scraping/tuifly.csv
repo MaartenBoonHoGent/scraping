@@ -1,6 +1,5 @@
 arrivalAirportCode,arrivalAirportName,arrivalDate,arrivalTime,carrierCode,daysToDeparture,departureAirportCode,departureAirportName,departureDate,departureDateDifference,departureMonth,departureSeason,departureTime,departureYear,directOrIndirectFlight,flightDuration,flightNumber,isCheapestFlight,limitedAvailabiltySeats,productID,productName,productType,thirdPartyFlightAvailable,currentPrice,currentPricePerPerson
 TFS,Tenerife,2023-03-29,11:00,TB,30,BRU,Brussel,2023-03-29,-3,2023-03,W23,07:00,2023,Direct,5u 0m,1763,No,,TFS,Tenerife,Flight-Only,No,154.99,154.99
-TFS,Tenerife,2023-03-29,14:55,TB,30,LPA,Gran Canaria,2023-03-29,-3,2023-03,W23,13:40,2023,Indirect,6u 30m,1631,Yes,,TFS,Tenerife,Flight-Only,No,134.99,134.99
 TFS,Tenerife,2023-03-30,10:05,TB,30,BRU,Brussel,2023-03-30,-2,2023-03,W23,06:05,2023,Direct,5u 0m,1751,Yes,,TFS,Tenerife,Flight-Only,No,159.99,159.99
 TFS,Tenerife,2023-03-30,17:50,TB,30,OST,Brugge-Oostende,2023-03-30,-2,2023-03,W23,13:50,2023,Direct,5u 0m,1801,No,,TFS,Tenerife,Flight-Only,No,184.99,184.99
 TFS,Tenerife,2023-03-31,10:05,TB,30,BRU,Brussel,2023-03-31,-1,2023-03,W23,06:05,2023,Direct,5u 0m,1751,No,,TFS,Tenerife,Flight-Only,No,299.99,299.99
@@ -18,7 +17,6 @@ TFS,Tenerife,2023-04-03,10:10,TB,30,BRU,Brussel,2023-04-03,2,2023-04,W23,06:10,2
 TFS,Tenerife,2023-04-04,10:05,TB,30,BRU,Brussel,2023-04-04,3,2023-04,W23,06:05,2023,Direct,5u 0m,1753,No,,TFS,Tenerife,Flight-Only,No,319.99,319.99
 TFS,Tenerife,2023-04-04,17:00,TB,30,OST,Brugge-Oostende,2023-04-04,3,2023-04,W23,13:00,2023,Direct,5u 0m,1801,Yes,,TFS,Tenerife,Flight-Only,No,224.99,224.99
 TFS,Tenerife,2023-03-29,11:00,TB,30,BRU,Brussel,2023-03-29,-3,2023-03,W23,07:00,2023,Direct,5u 0m,1763,No,,TFS,Tenerife,Flight-Only,No,154.99,154.99
-TFS,Tenerife,2023-03-29,14:55,TB,30,LPA,Gran Canaria,2023-03-29,-3,2023-03,W23,13:40,2023,Indirect,6u 30m,1631,Yes,,TFS,Tenerife,Flight-Only,No,134.99,134.99
 TFS,Tenerife,2023-03-30,10:05,TB,30,BRU,Brussel,2023-03-30,-2,2023-03,W23,06:05,2023,Direct,5u 0m,1751,Yes,,TFS,Tenerife,Flight-Only,No,159.99,159.99
 TFS,Tenerife,2023-03-30,17:50,TB,30,OST,Brugge-Oostende,2023-03-30,-2,2023-03,W23,13:50,2023,Direct,5u 0m,1801,No,,TFS,Tenerife,Flight-Only,No,184.99,184.99
 TFS,Tenerife,2023-03-31,10:05,TB,30,BRU,Brussel,2023-03-31,-1,2023-03,W23,06:05,2023,Direct,5u 0m,1751,No,,TFS,Tenerife,Flight-Only,No,299.99,299.99
@@ -36,7 +34,6 @@ TFS,Tenerife,2023-04-03,10:10,TB,30,BRU,Brussel,2023-04-03,2,2023-04,W23,06:10,2
 TFS,Tenerife,2023-04-04,10:05,TB,30,BRU,Brussel,2023-04-04,3,2023-04,W23,06:05,2023,Direct,5u 0m,1753,No,,TFS,Tenerife,Flight-Only,No,319.99,319.99
 TFS,Tenerife,2023-04-04,17:00,TB,30,OST,Brugge-Oostende,2023-04-04,3,2023-04,W23,13:00,2023,Direct,5u 0m,1801,Yes,,TFS,Tenerife,Flight-Only,No,224.99,224.99
 TFS,Tenerife,2023-03-29,11:00,TB,30,BRU,Brussel,2023-03-29,-3,2023-03,W23,07:00,2023,Direct,5u 0m,1763,No,,TFS,Tenerife,Flight-Only,No,154.99,154.99
-TFS,Tenerife,2023-03-29,14:55,TB,30,LPA,Gran Canaria,2023-03-29,-3,2023-03,W23,13:40,2023,Indirect,6u 30m,1631,Yes,,TFS,Tenerife,Flight-Only,No,134.99,134.99
 TFS,Tenerife,2023-03-30,10:05,TB,30,BRU,Brussel,2023-03-30,-2,2023-03,W23,06:05,2023,Direct,5u 0m,1751,Yes,,TFS,Tenerife,Flight-Only,No,159.99,159.99
 TFS,Tenerife,2023-03-30,17:50,TB,30,OST,Brugge-Oostende,2023-03-30,-2,2023-03,W23,13:50,2023,Direct,5u 0m,1801,No,,TFS,Tenerife,Flight-Only,No,184.99,184.99
 TFS,Tenerife,2023-03-31,10:05,TB,30,BRU,Brussel,2023-03-31,-1,2023-03,W23,06:05,2023,Direct,5u 0m,1751,No,,TFS,Tenerife,Flight-Only,No,299.99,299.99
@@ -54,7 +51,6 @@ TFS,Tenerife,2023-04-03,10:10,TB,30,BRU,Brussel,2023-04-03,2,2023-04,W23,06:10,2
 TFS,Tenerife,2023-04-04,10:05,TB,30,BRU,Brussel,2023-04-04,3,2023-04,W23,06:05,2023,Direct,5u 0m,1753,No,,TFS,Tenerife,Flight-Only,No,319.99,319.99
 TFS,Tenerife,2023-04-04,17:00,TB,30,OST,Brugge-Oostende,2023-04-04,3,2023-04,W23,13:00,2023,Direct,5u 0m,1801,Yes,,TFS,Tenerife,Flight-Only,No,224.99,224.99
 TFS,Tenerife,2023-03-29,11:00,TB,30,BRU,Brussel,2023-03-29,-3,2023-03,W23,07:00,2023,Direct,5u 0m,1763,No,,TFS,Tenerife,Flight-Only,No,154.99,154.99
-TFS,Tenerife,2023-03-29,14:55,TB,30,LPA,Gran Canaria,2023-03-29,-3,2023-03,W23,13:40,2023,Indirect,6u 30m,1631,Yes,,TFS,Tenerife,Flight-Only,No,134.99,134.99
 TFS,Tenerife,2023-03-30,10:05,TB,30,BRU,Brussel,2023-03-30,-2,2023-03,W23,06:05,2023,Direct,5u 0m,1751,Yes,,TFS,Tenerife,Flight-Only,No,159.99,159.99
 TFS,Tenerife,2023-03-30,17:50,TB,30,OST,Brugge-Oostende,2023-03-30,-2,2023-03,W23,13:50,2023,Direct,5u 0m,1801,No,,TFS,Tenerife,Flight-Only,No,184.99,184.99
 TFS,Tenerife,2023-03-31,10:05,TB,30,BRU,Brussel,2023-03-31,-1,2023-03,W23,06:05,2023,Direct,5u 0m,1751,No,,TFS,Tenerife,Flight-Only,No,299.99,299.99
