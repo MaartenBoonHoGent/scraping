@@ -36,30 +36,30 @@ def createUrl(flyingFrom,
 def object_to_dataframe(json_data):
     lijst = []
     for data in json_data['page']['search']['resultList']['outboundFlights']:
-        arrivalAirportCode = data['arrivalAirportCode'],
-        arrivalAirportName = data['arrivalAirportName'],
-        arrivalDate = data['arrivalDate'],
-        arrivalTime = data['arrivalTime'],
-        carrierCode = data['carrierCode'],
-        daysToDeparture = data['daysToDeparture'],
-        departureAirportCode = data['departureAirportCode'],
-        departureAirportName = data['departureAirportName'],
-        departureDate = data['departureDate'],
-        departureDateDifference = data['departureDateDifference'],
-        departureMonth = data['departureMonth'],
-        departureSeason = data['departureSeason'],
-        departureTime = data['departureTime'],
-        departureYear = data['departureYear'],
-        directOrIndirectFlight = data['directOrIndirectFlight'],
-        flightDuration = data['flightDuration'],
-        flightNumber = data['flightNumber'],
-        isCheapestFlight = data['isCheapestFlight'],
-        limitedAvailabiltySeats = data['limitedAvailabiltySeats'],
-        productID = data['productID'],
-        productName = data['productName'],
-        productType = data['productType'],
-        thirdPartyFlightAvailable = data['thirdPartyFlightAvailable'],
-        currentPrice = data['price']['currentPrice'],
+        arrivalAirportCode = data['arrivalAirportCode']
+        arrivalAirportName = data['arrivalAirportName']
+        arrivalDate = data['arrivalDate']
+        arrivalTime = data['arrivalTime']
+        carrierCode = data['carrierCode']
+        daysToDeparture = data['daysToDeparture']
+        departureAirportCode = data['departureAirportCode']
+        departureAirportName = data['departureAirportName']
+        departureDate = data['departureDate']
+        departureDateDifference = data['departureDateDifference']
+        departureMonth = data['departureMonth']
+        departureSeason = data['departureSeason']
+        departureTime = data['departureTime']
+        departureYear = data['departureYear']
+        directOrIndirectFlight = data['directOrIndirectFlight']
+        flightDuration = data['flightDuration']
+        flightNumber = data['flightNumber']
+        isCheapestFlight = data['isCheapestFlight']
+        limitedAvailabiltySeats = data['limitedAvailabiltySeats']
+        productID = data['productID']
+        productName = data['productName']
+        productType = data['productType']
+        thirdPartyFlightAvailable = data['thirdPartyFlightAvailable']
+        currentPrice = data['price']['currentPrice']
         currentPricePerPerson = data['price']['currentPricePerPerson']
 
         lijst.append({'arrivalAirportCode': arrivalAirportCode, 'arrivalAirportName': arrivalAirportName, 'arrivalDate': arrivalDate,
@@ -69,7 +69,8 @@ def object_to_dataframe(json_data):
                       'directOrIndirectFlight': directOrIndirectFlight, 'flightDuration': flightDuration, 'flightNumber': flightNumber,
                       'isCheapestFlight': isCheapestFlight, 'limitedAvailabiltySeats': limitedAvailabiltySeats, 'productID': productID,
                       'productName': productName, 'productType': productType, 'thirdPartyFlightAvailable': thirdPartyFlightAvailable,
-                      'currentPrice': currentPrice, 'currentPricePerPerson': currentPricePerPerson
+                      'currentPrice': currentPrice,
+                      'currentPricePerPerson': currentPricePerPerson
                       })
     return pd.DataFrame(lijst)
 
