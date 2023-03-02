@@ -75,12 +75,8 @@ def object_to_dataframe(json_data):
                       'productName': productName, 'productType': productType, 'thirdPartyFlightAvailable': thirdPartyFlightAvailable,
                       'currentPrice': currentPrice,
                       'currentPricePerPerson': currentPricePerPerson
-                      })
-    result = [] 
-    for i in lijst: 
-        if i not in result: 
-            result.append(i) 
-    return pd.DataFrame(result)
+                      }) 
+    return pd.DataFrame(lijst)
 
 
 def getFlightData():
@@ -132,6 +128,7 @@ def getFlightData():
 
 def main():
     retrieveData = getFlightData()
-    retrieveData.to_csv("scraping/tuifly.csv", index=False)
+    result_Data = retrieveData.drop_duplicates()            
+    result_Data.to_csv("scraping/tuifly.csv", index=False)
 if __name__ == "__main__":
     main()
