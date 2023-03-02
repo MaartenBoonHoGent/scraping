@@ -12,6 +12,7 @@ import pandas as pd
 # from webdriver_manager.chrome import ChromeDriverManager
 import json
 
+
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 
 # url = "http://www.tuifly.be/flight/nl/search?flyingFrom%5B%5D=OST&flyingTo%5B%5D=HER&depDate=2023-05-05&adults=1&children=0&childAge=&choiceSearch=true&searchType=pricegrid&nearByAirports=true&currency=EUR&isOneWay=true"
@@ -35,6 +36,8 @@ def createUrl(flyingFrom,
 
 def object_to_dataframe(json_data):
     lijst = []
+    date_data_recieved = datetime.now().date()
+    ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
     for data in json_data['page']['search']['resultList']['outboundFlights']:
         arrivalAirportCode = data['arrivalAirportCode']
         arrivalAirportName = data['arrivalAirportName']
@@ -62,16 +65,17 @@ def object_to_dataframe(json_data):
         currentPrice = data['price']['currentPrice']
         currentPricePerPerson = data['price']['currentPricePerPerson']
 
-        lijst.append({'arrivalAirportCode': arrivalAirportCode, 'arrivalAirportName': arrivalAirportName, 'arrivalDate': arrivalDate,
+        if departureAirportCode in ORIGINS: 
+            lijst.append({'date_data_recieved':date_data_recieved,'departureDate': departureDate,'departureTime': departureTime,'arrivalAirportCode': arrivalAirportCode, 'arrivalAirportName': arrivalAirportName, 'arrivalDate': arrivalDate,
                       'arrivalTime': arrivalTime, 'carrierCode': carrierCode, 'daysToDeparture': daysToDeparture, 'departureAirportCode': departureAirportCode,
-                      'departureAirportName': departureAirportName, 'departureDate': departureDate, 'departureDateDifference': departureDateDifference,
-                      'departureMonth': departureMonth, 'departureSeason': departureSeason, 'departureTime': departureTime, 'departureYear': departureYear,
+                      'departureAirportName': departureAirportName, 'departureDateDifference': departureDateDifference,
+                      'departureMonth': departureMonth, 'departureSeason': departureSeason, 'departureYear': departureYear,
                       'directOrIndirectFlight': directOrIndirectFlight, 'flightDuration': flightDuration, 'flightNumber': flightNumber,
                       'isCheapestFlight': isCheapestFlight, 'limitedAvailabiltySeats': limitedAvailabiltySeats, 'productID': productID,
                       'productName': productName, 'productType': productType, 'thirdPartyFlightAvailable': thirdPartyFlightAvailable,
                       'currentPrice': currentPrice,
                       'currentPricePerPerson': currentPricePerPerson
-                      })
+                      }) 
     return pd.DataFrame(lijst)
 
 
@@ -99,12 +103,12 @@ def getFlightData():
                                 flyingTo=destination)
 
                 options = webdriver.ChromeOptions()
-                # options.add_experimental_option("detach", True)
+                #options.add_experimental_option("detach", True)
                 options.add_argument('--ignore-certificate-errors')
                 driver_service = Service(executable_path=PATH)
                 driver = webdriver.Chrome(service=driver_service,
                                           options=options)
-                # driver.maximize_window()
+                #driver.maximize_window()
                 driver.implicitly_wait(25)
                 driver.get(URL)
                 driver.find_element(By.CSS_SELECTOR, "#cmCloseBanner").click()
@@ -124,8 +128,7 @@ def getFlightData():
 
 def main():
     retrieveData = getFlightData()
-    retrieveData.to_csv("scraping/tuifly.csv", index=False)
-
-
+    result_Data = retrieveData.drop_duplicates()            
+    result_Data.to_csv("scraping/tuifly.csv", index=False)
 if __name__ == "__main__":
     main()
