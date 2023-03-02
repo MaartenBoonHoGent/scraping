@@ -23,8 +23,14 @@ driver = webdriver.Chrome(service=driver_service,options=options)
 driver.get(url)
 
 #klikken voor naar juiste pagina te gaan  
-r = driver.find_element(By.CSS_SELECTOR, "div.bp-mock p a.button")
-driver.execute_script("arguments[0].click()", r)
+r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
+# LAbel has the following class: checkbox-like lh lh-checkmark-checked
+
+label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
+print(label_click)
+driver.execute_script("arguments[0].click()", label_click) # Click the button
+driver.execute_script("arguments[0].click()", r) 
+exit(0)
 
 
 #wachten tot pagina laad
