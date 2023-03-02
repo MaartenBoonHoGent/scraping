@@ -1,15 +1,7 @@
-#proberen vanaf gewenste pagina vertrekken naar info pagina maar zonder succes 2U 20min
-
-import requests
 import time
-from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.service import Service
-from selenium.common.exceptions import NoSuchElementException  
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
@@ -37,12 +29,47 @@ driver.execute_script("arguments[0].click()", r)
 # while(not s.equals(url)):
 #     #wachten tot pagina laad
 #     time.sleep(1)
-time.sleep(60)
+time.sleep(25)
 
 
 #data ophalen
+#start
+locaties = driver.find_element(By.CSS_SELECTOR, "span.bound")
+start, stop = locaties.text.split(" - ")
+
+#info per reis
 reizen = driver.find_elements(By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")
-tel = 0
 for r in reizen:
+    #tijden splitsen in 2 voor begin en eind
     tijden = r.find_element(By.CSS_SELECTOR, "span.time")
-    print(tijden.text)
+    startUur, aankomstUur = tijden.text.split(" - ")
+
+    #duur
+    duur = r.find_element(By.CSS_SELECTOR, "span.duration")
+
+    #prijs
+    prijs = r.find_element(By.CSS_SELECTOR, "label.cabinPrice")
+    prijs2 = prijs.text.split(" ")
+    prijsresult = prijs2[1] + " " + prijs2[2]
+
+    #stoelen zorgen dat dit enkel van economie is
+    stoelen = r.find_element(By.CSS_SELECTOR, "div.seats")
+    stoelen2 = stoelen.text.split(" ")
+    stoelenresult = stoelen2[0]
+
+    #stop namen van vliegvelden
+    tussenStops = r.find_elements(By.CSS_SELECTOR, "div.detailsSecondLine span.ng-star-inserted")
+    tussenStops.pop()
+    setStops= set()
+    for x in tussenStops:
+        van, naar= x.text.split(" - ")
+        setStops.add(van)
+        setStops.add(naar)
+    setStops.remove("BRU")
+
+    #stops: dit zijn niet alleen maar vliegvelden maar ook stations/ deze zien we niet in de stoppen
+    stops = r.find_element(By.CSS_SELECTOR, "span.nbStops")
+    stops2 = stops.text.split(" ")
+    stopresult = stops2[0]
+
+    print("\nstart:", start, "   stop:", stop, " tussenstop Vliegvelden:", setStops, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, " stops:", stopresult)
