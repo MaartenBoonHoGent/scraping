@@ -69,7 +69,8 @@ def object_to_dataframe(json_data):
                       'directOrIndirectFlight': directOrIndirectFlight, 'flightDuration': flightDuration, 'flightNumber': flightNumber,
                       'isCheapestFlight': isCheapestFlight, 'limitedAvailabiltySeats': limitedAvailabiltySeats, 'productID': productID,
                       'productName': productName, 'productType': productType, 'thirdPartyFlightAvailable': thirdPartyFlightAvailable,
-                      'currentPrice': currentPrice, 'currentPricePerPerson': currentPricePerPerson
+                      'currentPrice': currentPrice,
+                      'currentPricePerPerson': currentPricePerPerson
                       })
     return pd.DataFrame(lijst)
 
