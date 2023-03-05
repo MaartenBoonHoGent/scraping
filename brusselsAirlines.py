@@ -3,6 +3,7 @@ from datetime import date
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import pandas as pd
 
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
@@ -35,11 +36,15 @@ for bestemming in landen:
   #     time.sleep(1)
   time.sleep(25)
 
+  #empty final df
+  dfinal= pd.DataFrame({})
+
 
   #data ophalen
   #start
   locaties = driver.find_element(By.CSS_SELECTOR, "span.bound")
   start, stop = locaties.text.split(" - ")
+
 
   #info per reis
   reizen = driver.find_elements(By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")
@@ -96,4 +101,28 @@ for bestemming in landen:
       print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
 
 
+      #add data to datafram
+      df = pd.DataFrame({
+         'datum': [date.today()],
+         'start': [start],
+         'stop': [stop],
+         'Vertrek uur':[startUur],
+         'Aankomst uur':[aankomstUur],
+         'duur':[duur.text],
+         'prijs':[prijsresult],
+         'stoelen':[stoelenresult],
+         'stops':[stopresult],
+         'tussenstop Viegvelden':[setStops],
+         'FlightNummers':[setNummers],
+         'Uitvoerders':[setUitvoerders]
+      })
+      #voeg dataframes samen
+      dfinal= pd.concat([dfinal,df],ignore_index=True)
+      
+
+
+
+
       driver.quit
+
+dfinal.to_csv('scraping/brusselsAirlines.csv', index=False)
