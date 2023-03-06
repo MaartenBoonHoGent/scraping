@@ -1,9 +1,4 @@
 datum,start,stop,Vertrek uur,Aankomst uur,duur,prijs,stoelen,stops,tussenstop Viegvelden,FlightNummers,Uitvoerders
-2023-03-05,Brussel,Malaga,06:35,09:20,2h 45min,"207,43 EUR",4,0,{'AGP'},{'SN3735'},{'Brussels Airlines'}
-2023-03-05,Brussel,Malaga,07:45,10:30,2h 45min,"207,43 EUR",4,0,{'AGP'},{'SN1535'},{'Brussels Airlines'}
-2023-03-05,Brussel,Malaga,11:55,14:40,2h 45min,"207,43 EUR",4,0,{'AGP'},{'SN3737'},{'Brussels Airlines'}
-2023-03-05,Brussel,Malaga,09:25,19:30,10h 05min,"207,43 EUR",4,1,"{'AGP', 'GVA'}","{'LX4553', 'LX2104'}","{'Brussels Airlines', 'Swiss International Air Lines'}"
-2023-03-05,Brussel,Malaga,09:45,15:10,5h 25min,"207,43 EUR",4,1,"{'AGP', 'ZRH'}","{'LX787', 'LX2114'}",{'Swiss International Air Lines'}
-2023-03-05,Brussel,Malaga,15:10,19:30,4h 20min,"207,43 EUR",4,1,"{'AGP', 'GVA'}","{'LX2104', 'LX4557'}","{'Brussels Airlines', 'Swiss International Air Lines'}"
-2023-03-05,Brussel,Malaga,06:20,15:10,8h 50min,"207,43 EUR",4,2,"{'ZRH', 'AGP', 'GVA'}","{'LX2114', 'LX4551', 'LX2809'}","{'Brussels Airlines', 'Swiss International Air Lines'}"
-2023-03-05,Brussel,Malaga,06:20,15:10,8h 50min,"207,43 EUR",4,2,"{'ZRH', 'AGP', 'GVA'}","{'LX2807', 'LX4551', 'LX2114'}","{'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-06,Brussel,Alicante,19:15,14:05,18h 50min,"182,43 EUR",1,2,"{'GVA', 'ZHT', 'ALC', 'ZRH'}","{'LX4563', 'LX2174', 'LX7475'}","{'Helvetic Airways', 'SWISS RAILWAYS', 'Brussels Airlines'}"
+2023-03-06,Brussel,Alicante,19:15,14:05,18h 50min,"182,43 EUR",1,2,"{'GVA', 'ZHT', 'ALC', 'ZRH'}","{'LX4563', 'LX7473', 'LX2174'}","{'Helvetic Airways', 'SWISS RAILWAYS', 'Brussels Airlines'}"
+2023-03-06,Brussel,Alicante,19:15,14:05,18h 50min,"182,43 EUR",1,2,"{'ZRH', 'ALC', 'GVA'}","{'LX4563', 'LX2805', 'LX2174'}","{'Helvetic Airways', 'Swiss International Air Lines', 'Brussels Airlines'}"
