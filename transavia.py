@@ -21,6 +21,8 @@ PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 MAIL = "wasomi3092@wireps.com"
 PASSWORD = "^Ph!gRA46jSPSt"
 
+GMAIL = "transaviabot@gmail.com"
+
 def typeText(driver, element, text):
     driver.execute_script("arguments[0].value = arguments[1];", element, text)
     
@@ -28,7 +30,6 @@ def typeText(driver, element, text):
 def createURL(origin, destination, date) -> str:
     # return "https://www.transavia.com/nl-BE/boek-een-vlucht/vluchten/zoeken/"
     return "https://www.transavia.com/nl-BE/home/"
-    return "https://customerlogin.transavia.com/379fb04b-964b-4985-965c-2d9097eef215/b2c_1a_customer_signuporsignin/oauth2/v2.0/authorize?client_id=ed9a43b5-64fb-47b1-abac-bc510a1802e5&redirect_uri=https%3a%2f%2fwww.transavia.com%2fapi%2fpersonalaccountauth%2fcallback&response_mode=form_post&response_type=code&scope=openid&state=OpenIdConnect.AuthenticationProperties%3dSrosqYacI8Trp_1220lgIM3GzG1BagyAtTbkQiLx3Cw4Aaf_601hDC9rmRILezbqu6q0GQ3nKNCHATDD8q9bPy5JFQf1clrR6QMGYks8SFaRx0_5obJAGf0nUiT46VAZmRHTa7eDuOjuHik8JFrP-6jt8qPJJVerjoGsIGp9hZw90Hd0VkmpKyPRjxuhp516n0fbs7uowx3l1UsoSZ0pDBuSyBE0XdTjfHl8CT8Bbwb7KFf2HgQzLMwZEcjd_5vWM7XTVLetLkCNUJLMBGoewNi3fY1wiqCVz96_MraXEgv3I5xHzQBJWe1mvRN35qhH9Wwb4ot_sDpJN_h2uaAGgp6MpvnYhJfsLGn18ZNia1CqKiPmQn2aE7ZbC1FeS2HGAJE6Vk91gtm43V024cJ_g1GB6xiBUWRmCjyuT4WyOfMG1iG2VUQS1PcFzBjOGbxU0rxPHSTAVwMP-I5EO-1Agui541UqPIH3w9Cka6JFDE4&ui_locales=nl-BE&locale=nl-BE&x-client-SKU=ID_NET&x-client-ver=1.0.40306.1554"
 def createDriver(path):
     options = webdriver.ChromeOptions()
     options.add_experimental_option("detach", True)
@@ -55,6 +56,27 @@ def randomEvent(driver):
         randomEvent(driver)
 
 def getData():
+    # Log in to gmail 
+    
+    driver = createDriver(PATH)
+
+    loginSite = "https://accounts.google.com/"
+    driver.get(loginSite)
+    # Wait for the page to load
+    eMailElement = driver.find_element(By.ID, "identifierId")
+    driver.execute_script("arguments[0].value = arguments[1];", eMailElement, GMAIL)
+    # Click on the next button
+    nextBtt = driver.find_element(By.ID, "identifierNext")
+    driver.execute_script("arguments[0].click()", nextBtt)
+    # Wait for the page to load
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "Passwd")))
+    # Enter the password
+    passwordElement = driver.find_element(By.NAME, "Passwd")
+    driver.execute_script("arguments[0].value = arguments[1];", passwordElement, PASSWORD)
+    # Click on the next button
+    nextBtt = driver.find_element(By.ID, "passwordNext")
+    driver.execute_script("arguments[0].click()", nextBtt)
+    randomEvent(driver)
     for origin in ORIGINS:
         for destination in DESTINATIONS:
             for d in DATES:
@@ -62,7 +84,6 @@ def getData():
                 # Get the data from the website
                 url = createURL(origin, destination, d)
                 # Open the selenium driver
-                driver = createDriver(PATH)
                 driver.get(url)
                 # Wait for the page to load
                 randomEvent(driver)
