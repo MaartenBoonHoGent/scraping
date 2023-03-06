@@ -1,0 +1,4 @@
+datum,start,stop,Vertrek uur,Aankomst uur,duur,prijs,stoelen,stops,tussenstop Viegvelden,FlightNummers,Uitvoerders
+2023-03-06,Brussel,Alicante,19:15,14:05,18h 50min,"182,43 EUR",1,2,"{'GVA', 'ZHT', 'ALC', 'ZRH'}","{'LX4563', 'LX2174', 'LX7475'}","{'Helvetic Airways', 'SWISS RAILWAYS', 'Brussels Airlines'}"
+2023-03-06,Brussel,Alicante,19:15,14:05,18h 50min,"182,43 EUR",1,2,"{'GVA', 'ZHT', 'ALC', 'ZRH'}","{'LX4563', 'LX7473', 'LX2174'}","{'Helvetic Airways', 'SWISS RAILWAYS', 'Brussels Airlines'}"
+2023-03-06,Brussel,Alicante,19:15,14:05,18h 50min,"182,43 EUR",1,2,"{'ZRH', 'ALC', 'GVA'}","{'LX4563', 'LX2805', 'LX2174'}","{'Helvetic Airways', 'Swiss International Air Lines', 'Brussels Airlines'}"
