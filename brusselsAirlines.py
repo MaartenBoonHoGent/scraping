@@ -12,6 +12,9 @@ PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 
 landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife"]
 
+#empty final df
+dfinal= pd.DataFrame({})
+
 opnieuw = False
 
 options = webdriver.ChromeOptions()
@@ -52,8 +55,7 @@ for bestemming in landen:
       #     time.sleep(1)
       time.sleep(25)
 
-      #empty final df
-      dfinal= pd.DataFrame({})
+     
 
 
       #data ophalen
@@ -69,6 +71,8 @@ for bestemming in landen:
           tijden = r.find_element(By.CSS_SELECTOR, "span.time")
           startUur, aankomstUur = tijden.text.split(" - ")
 
+
+
           #duur
           duur = r.find_element(By.CSS_SELECTOR, "span.duration")
 
@@ -76,6 +80,10 @@ for bestemming in landen:
           economy = driver.find_element(By.CSS_SELECTOR, "pres-avail-class-info.cabin")
           #prijs
           prijs = economy.find_element(By.CSS_SELECTOR, "label.cabinPrice")
+         # soldout = economy.find_element(By.CSS_SELECTOR,"div.container soldout ng-star-inserted")
+         # if soldout:
+          #  continue
+             
           prijs2 = prijs.text.split(" ")
           prijsresult = prijs2[1] + " " + prijs2[2]
 
@@ -134,9 +142,10 @@ for bestemming in landen:
           })
           #voeg dataframes samen
           dfinal = pd.concat([dfinal,df],ignore_index = True)
-          dfinal.to_csv('scraping/brusselsAirlines.csv', index=False)
+          
 
     except:
       opnieuw = True
+dfinal.to_csv('scraping/brusselsAirlines.csv', index=False)
 
 driver.quit()
