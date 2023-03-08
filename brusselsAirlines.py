@@ -80,9 +80,11 @@ for bestemming in landen:
           economy = driver.find_element(By.CSS_SELECTOR, "pres-avail-class-info.cabin")
           #prijs
           prijs = economy.find_element(By.CSS_SELECTOR, "label.cabinPrice")
-         # soldout = economy.find_element(By.CSS_SELECTOR,"div.container soldout ng-star-inserted")
-         # if soldout:
-          #  continue
+
+          #mogelijks werkende? testen wanneer land met niet beschikbare vlucht
+          soldout = economy.find_element(By.CSS_SELECTOR,"div.container soldout ng-star-inserted")
+          if soldout.text=="niet beschikbaar":
+            continue
              
           prijs2 = prijs.text.split(" ")
           prijsresult = prijs2[1] + " " + prijs2[2]
