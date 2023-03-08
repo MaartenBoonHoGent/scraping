@@ -1,0 +1,4 @@
+datum,start,stop,Vertrek uur,Aankomst uur,duur,prijs,stoelen,stops,tussenstop Viegvelden,FlightNummers,Uitvoerders
+2023-03-07,Brussel,Palermo,19:15,14:00,18h 45min,"376,60 EUR",1,2,"{'GVA', 'PMO', 'ZRH', 'ZHT'}","{'LX1742', 'LX7475', 'LX4563'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-07,Brussel,Palermo,19:15,14:00,18h 45min,"376,60 EUR",1,2,"{'GVA', 'PMO', 'ZRH', 'ZHT'}","{'LX1742', 'LX7473', 'LX4563'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-07,Brussel,Palermo,19:15,14:00,18h 45min,"376,60 EUR",1,2,"{'PMO', 'GVA', 'ZRH'}","{'LX1742', 'LX2805', 'LX4563'}","{'Brussels Airlines', 'Swiss International Air Lines'}"
