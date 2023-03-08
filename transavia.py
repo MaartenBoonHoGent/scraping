@@ -87,10 +87,10 @@ def getData():
                 driver.get(url)
                 # Wait for the page to load
                 randomEvent(driver)
-                # Find the element with following classes: rc-anchor-center-item rc-anchor-checkbox-label
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "recaptcha-anchor-label")))
-                element = driver.find_element(By.ID, "recaptcha-anchor-label")
-                driver.execute_script("arguments[0].click()", element)
+                # ToDo: ByPass the captcha
+                # For now: Manually solve the captcha
+                time.sleep(20)
+                
                 """WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "signInName")))
                 # Login
                 randomEvent(driver)
