@@ -1,4 +1,27 @@
 datum,start,stop,Vertrek uur,Aankomst uur,duur,prijs,stoelen,stops,tussenstop Viegvelden,FlightNummers,Uitvoerders
-2023-03-07,Brussel,Palermo,19:15,14:00,18h 45min,"376,60 EUR",1,2,"{'GVA', 'PMO', 'ZRH', 'ZHT'}","{'LX1742', 'LX7475', 'LX4563'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
-2023-03-07,Brussel,Palermo,19:15,14:00,18h 45min,"376,60 EUR",1,2,"{'GVA', 'PMO', 'ZRH', 'ZHT'}","{'LX1742', 'LX7473', 'LX4563'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
-2023-03-07,Brussel,Palermo,19:15,14:00,18h 45min,"376,60 EUR",1,2,"{'PMO', 'GVA', 'ZRH'}","{'LX1742', 'LX2805', 'LX4563'}","{'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-09,Brussel,Londen,13:15,16:40,4h 25min,"193,96 EUR",-1,1,"{'LCY', 'FRA'}","{'LH934', 'LH1011'}",{'Lufthansa Cityline'}
+2023-03-09,Brussel,Londen,13:15,16:45,4h 30min,"345,96 EUR",-1,1,"{'LHR', 'FRA'}","{'LH914', 'LH1011'}","{'Lufthansa Cityline', 'Lufthansa'}"
+2023-03-09,Brussel,Londen,13:15,17:40,5h 25min,"193,96 EUR",-1,1,"{'LCY', 'FRA'}","{'LH936', 'LH1011'}",{'Lufthansa Cityline'}
+2023-03-09,Brussel,Londen,14:40,17:40,4h 00min,"230,96 EUR",2,1,"{'LCY', 'FRA'}","{'LH936', 'LH1013'}",{'Lufthansa Cityline'}
+2023-03-09,Brussel,Londen,14:40,20:45,7h 05min,"442,96 EUR",1,1,"{'LHR', 'FRA'}","{'LH1013', 'LH920'}","{'Lufthansa Cityline', 'Lufthansa'}"
+2023-03-09,Brussel,Londen,14:55,17:50,3h 55min,"384,53 EUR",2,1,"{'ZRH', 'LHR'}","{'LX326', 'LX781'}",{'Swiss International Air Lines'}
+2023-03-09,Brussel,Londen,14:55,18:40,4h 45min,"223,53 EUR",1,1,"{'ZRH', 'LCY'}","{'LX466', 'LX781'}","{'Swiss International Air Lines', 'Helvetic Airways'}"
+2023-03-09,Brussel,Londen,14:55,19:55,6h 00min,"223,53 EUR",1,1,"{'ZRH', 'LCY'}","{'LX781', 'LX454'}",{'Swiss International Air Lines'}
+2023-03-09,Brussel,Londen,15:10,18:40,4h 30min,-1,-1,1,"{'GVA', 'LHR'}","{'LX4557', 'LX356'}","{'Swiss International Air Lines', 'Brussels Airlines'}"
+2023-03-09,Brussel,Londen,15:10,18:50,4h 40min,-1,-1,1,"{'LCY', 'GVA'}","{'LX4557', 'LX446'}","{'Swiss International Air Lines', 'Brussels Airlines'}"
+2023-03-09,Brussel,Faro,17:55,23:50,6h 55min,"779,88 EUR",6,1,"{'LIS', 'FAO'}","{'SN6405', 'TP1901'}",{'Tap Air Portugal'}
+2023-03-09,Brussel,Faro,14:55,23:50,9h 55min,"840,98 EUR",4,2,"{'ZRH', 'LIS', 'FAO'}","{'LX781', 'TP1901', 'LX4582'}","{'Swiss International Air Lines', 'Tap Air Portugal'}"
+2023-03-09,Brussel,Faro,20:15,10:30,15h 15min,"893,41 EUR",4,2,"{'MUC', 'FAO', 'LIS'}","{'LH6992', 'LH6966', 'LH2293'}","{'Tap Air Portugal', 'Lufthansa'}"
+2023-03-09,Brussel,Alicante,19:15,14:05,18h 50min,"524,64 EUR",1,2,"{'ZRH', 'ALC', 'ZHT', 'GVA'}","{'LX4563', 'LX7473', 'LX2174'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-09,Brussel,Alicante,19:15,14:05,18h 50min,"524,64 EUR",1,2,"{'ZRH', 'ALC', 'ZHT', 'GVA'}","{'LX4563', 'LX7475', 'LX2174'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-09,Brussel,Alicante,19:15,14:05,18h 50min,"524,64 EUR",1,5,"{'ZRH', 'ALC', 'ZHT', 'GVA'}","{'LX4563', 'LX9403', 'LX2174'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-09,Brussel,Malaga,19:15,09:00,13h 45min,"277,82 EUR",-1,1,"{'AGP', 'GVA'}","{'LX4563', 'LX2104'}","{'Swiss International Air Lines', 'Brussels Airlines'}"
+2023-03-09,Brussel,Malaga,19:15,12:50,17h 35min,"708,92 EUR",1,2,"{'ZRH', 'AGP', 'GVA'}","{'LX4563', 'LX2801', 'LX2110'}","{'Swiss International Air Lines', 'Brussels Airlines'}"
+2023-03-09,Brussel,Malaga,20:15,09:00,12h 45min,"332,92 EUR",1,2,"{'ZRH', 'AGP', 'GVA'}","{'LX2818', 'LX2104', 'LX789'}",{'Swiss International Air Lines'}
+2023-03-09,Brussel,Malaga,19:15,12:50,17h 35min,"696,64 EUR",1,5,"{'ZRH', 'AGP', 'ZHT', 'GVA'}","{'LX4563', 'LX9403', 'LX2110'}","{'SWISS RAILWAYS', 'Brussels Airlines', 'Swiss International Air Lines'}"
+2023-03-09,Brussel,Palma de Mallorca,13:15,17:25,4h 10min,"636,96 EUR",2,1,"{'PMI', 'FRA'}","{'LH1152', 'LH1011'}","{'Lufthansa Cityline', 'Lufthansa'}"
+2023-03-09,Brussel,Palma de Mallorca,19:50,11:50,16h 00min,"504,67 EUR",3,1,"{'PMI', 'VIE'}","{'OS356', 'OS433'}",{'Austrian Airlines'}
+2023-03-09,Brussel,Tenerife,20:15,10:15,15h 00min,"292,53 EUR",-1,1,"{'ZRH', 'TFS'}","{'LX8214', 'LX789'}","{'Swiss International Air Lines', 'Edelweiss Air'}"
+2023-03-09,Brussel,Tenerife,20:55,14:00,18h 05min,"377,09 EUR",2,2,"{'BER', 'TFS', 'FRA'}","{'LH4380', 'LH5569', 'LH175'}","{'Ew Discover', 'Brussels Airlines', 'Lufthansa'}"
+2023-03-09,Brussel,Tenerife,20:55,14:00,18h 05min,"377,09 EUR",1,2,"{'BER', 'TFS', 'FRA'}","{'LH4380', 'LH045', 'LH5569'}","{'Ew Discover', 'Brussels Airlines', 'Lufthansa'}"
+2023-03-09,Brussel,Tenerife,20:55,14:00,18h 05min,"377,09 EUR",2,2,"{'BER', 'TFS', 'FRA'}","{'LH173', 'LH4380', 'LH5569'}","{'Ew Discover', 'Brussels Airlines', 'Lufthansa'}"
