@@ -1,21 +1,25 @@
-import time
+#KIJKEN VOOR CODE ALS ER GEEN VLUCHTEN ZIJN
+# geenVluchten = True
+# try:
+#   span = driver.find_element(By.CSS_SELECTOR, "div.text span")
+#   print(span.text)
+# except:
+#   geenVluchten = False
 from datetime import date
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 
-#"Kerkyra", "brindisi", "ibiza"
-
-landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife"]
+landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
 
 #empty final df
 dfinal= pd.DataFrame({})
-
-opnieuw = False
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
@@ -23,7 +27,7 @@ driver_service = Service(executable_path=PATH)
 driver = webdriver.Chrome(service=driver_service,options=options)
 
 for bestemming in landen:
-  #in geval van fouten opnieuw beginnen
+  # in geval van fouten opnieuw beginnen
   opnieuw = True
   while(opnieuw):
     try:
@@ -31,31 +35,27 @@ for bestemming in landen:
       url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
       driver.get(url)
 
-
-
-      #SOMS KAN HET NOG LADEN (manier vinden voor te zien als dit lukt)  
-
-
-
       #klikken voor naar juiste pagina te gaan
       r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
       # LAbel has the following class: checkbox-like lh lh-checkmark-checked
 
+      #enkelle reizen aanklikken 
       label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
       print(label_click)
       driver.execute_script("arguments[0].click()", label_click) # Click the button
       driver.execute_script("arguments[0].click()", r)
 
 
-      #MANIER VINDEN VOOR TE ZIEN OF WE OP DE JUISTE PAGINA ZIJN (minder laden)
-      #wachten tot pagina geladen is
-      # s = driver.getCurrentUrl()
-      # while(not s.equals(url)):
-      #     #wachten tot pagina laad
-      #     time.sleep(1)
-      time.sleep(25)
+      #wachten tot tijd geladen is
+      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")))
 
-     
+
+      # #datum vertrek zetten
+      # datum = driver.find_element(By.CSS_SELECTOR, "pres-datepicker-v2 div.container label.label ")
+      # datum.send_keys("01.04.2023")
+      # volgende = driver.find_element(By.CSS_SELECTOR, "button.newSearchButton")
+      # driver.execute_script("arguments[0].click()", volgende)
+
 
 
       #data ophalen
@@ -77,17 +77,16 @@ for bestemming in landen:
           duur = r.find_element(By.CSS_SELECTOR, "span.duration")
 
           #juiste groep kiezen
-          economy = driver.find_element(By.CSS_SELECTOR, "pres-avail-class-info.cabin")
+          economy = r.find_element(By.CSS_SELECTOR, "pres-avail-class-info.cabin")
+          
           #prijs
-          prijs = economy.find_element(By.CSS_SELECTOR, "label.cabinPrice")
-
           #mogelijks werkende? testen wanneer land met niet beschikbare vlucht
-          soldout = economy.find_element(By.CSS_SELECTOR,"div.container soldout ng-star-inserted")
-          if soldout.text=="niet beschikbaar":
-            continue
-             
-          prijs2 = prijs.text.split(" ")
-          prijsresult = prijs2[1] + " " + prijs2[2]
+          try:
+            prijs = economy.find_element(By.CSS_SELECTOR, "label.cabinPrice")
+            prijs2 = prijs.text.split(" ")
+            prijsresult = prijs2[1] + " " + prijs2[2]
+          except:
+            prijsresult = -1
 
           #stoelen
           try:
