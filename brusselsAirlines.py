@@ -15,8 +15,6 @@ landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", 
 #empty final df
 dfinal= pd.DataFrame({})
 
-opnieuw = False
-
 options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
 driver_service = Service(executable_path=PATH)
@@ -41,6 +39,7 @@ for bestemming in landen:
       r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
       # LAbel has the following class: checkbox-like lh lh-checkmark-checked
 
+      #enkelle reizen aanklikken 
       label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
       print(label_click)
       driver.execute_script("arguments[0].click()", label_click) # Click the button
@@ -82,12 +81,16 @@ for bestemming in landen:
           prijs = economy.find_element(By.CSS_SELECTOR, "label.cabinPrice")
 
           #mogelijks werkende? testen wanneer land met niet beschikbare vlucht
-          soldout = economy.find_element(By.CSS_SELECTOR,"div.container soldout ng-star-inserted")
+          try:
+            soldout = economy.find_element(By.CSS_SELECTOR,"div.container soldout ng-star-inserted")
+          except:
+            soldout = -1
+          
           if soldout.text=="niet beschikbaar":
-            continue
-             
-          prijs2 = prijs.text.split(" ")
-          prijsresult = prijs2[1] + " " + prijs2[2]
+            prijsresult = -1
+          else: #Normaal verloop
+            prijs2 = prijs.text.split(" ")
+            prijsresult = prijs2[1] + " " + prijs2[2]
 
           #stoelen
           try:
