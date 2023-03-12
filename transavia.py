@@ -81,9 +81,11 @@ wait(10)
 
 # Switch back to the main window
 driver.switch_to.default_content()
-
+"""
 backButton = driver.find_element(By.CSS_SELECTOR, "input#dateSelection_IsReturnFlight")
-backButton.click()
-# Set the right 
+backButton.click()"""
+# Go to the actual link
+
+driver.get('https://www.transavia.com/nl-BE/boek-een-vlucht/uitgebreid-zoeken/zoeken/')
 
 # driver.close()
