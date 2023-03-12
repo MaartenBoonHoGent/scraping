@@ -63,7 +63,7 @@ def object_to_dataframe(json_data):
             flightNumber = data['flightsectors'][0]['flightNumber']
 
 
-        if departAirportCode in ORIGINS: 
+        if departAirportCode =='ANR': 
             lijst.append({'date_data_recieved': date_data_recieved, 'departDate': departDate, 'arrivalDate': arrivalDate, 'flightNumber': flightNumber,'productId': productId,
                           'depTime': depTime, 'arrivalTime': arrivalTime, 'departAirportCode': departAirportCode, 
                           'arrivalAirportCode': arrivalAirportCode, 'journeyType': journeyType,'totalNumberOfStops':totalNumberOfStops,'journeyDuration': journeyDuration, 
@@ -79,22 +79,17 @@ def getFlightData():
         'PMI', 'TFS']
     TEST = ['TFS']
     ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
-    dateIn = date(2023, 4, 1)
-    dateOut = date(2023, 4, 30)
+    dateIn = date(2023, 6, 1)
+    dateOut = date(2023, 6, 30)
     retrieveData = []
-    addDays = timedelta(days=7)
-    amnt = len(DESTINATION) * len(ORIGINS) 
+    addDays = timedelta(days=5)
 
     while dateIn <= dateOut:
-    # add a month
-        dateIn += addDays
-        counter = 0
-        for destination in DESTINATION :
-            counter += 1
-            print(f"Date = {dateIn} Request {counter}/{amnt}", end="\r")
+        for destination in range(1) :
             URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
-                            flyingFrom='BRU',
-                            flyingTo=destination)
+                            flyingFrom='ANR',
+                            flyingTo='ALC')
+            dateIn += addDays
             url = "http://www.tuifly.be/flight/nl/"
             options = webdriver.ChromeOptions()
             #options.add_experimental_option("detach", True)
@@ -125,6 +120,6 @@ def getFlightData():
 def main():
     retrieveData = getFlightData()
     result_Data = retrieveData.drop_duplicates()            
-    result_Data.to_csv("scraping/tuifly.csv", index=False)
+    result_Data.to_csv("scraping/tuiflyTEST.csv", index=False)
 if __name__ == "__main__":
     main()
