@@ -80,7 +80,7 @@ def getFlightData():
     TEST = ['TFS']
     ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
     dateIn = date(2023, 4, 1)
-    dateOut = date(2023, 4, 30)
+    dateOut = date(2023, 10, 1)
     retrieveData = []
     addDays = timedelta(days=7)
     amnt = len(DESTINATION) * len(ORIGINS) 
@@ -115,6 +115,7 @@ def getFlightData():
             #driver.find_element(By.CSS_SELECTOR, "#inputs__text").click()
 
             data = driver.execute_script("return JSON.stringify(searchResultsJson)")
+            driver.close()
             #data = re.search(r'\((.*?)\)', data).group(1)
             json_object = json.loads(data)                
             retrieveData.append(object_to_dataframe(json_object))
