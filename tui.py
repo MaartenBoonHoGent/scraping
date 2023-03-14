@@ -18,6 +18,7 @@ PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 # url = "http://www.tuifly.be/flight/nl/search?flyingFrom%5B%5D=OST&flyingTo%5B%5D=HER&depDate=2023-05-05&adults=1&children=0&childAge=&choiceSearch=true&searchType=pricegrid&nearByAirports=true&currency=EUR&isOneWay=true"
 
 
+
 def createUrl(flyingFrom,
               flyingTo,
               depDate,
@@ -38,43 +39,36 @@ def object_to_dataframe(json_data):
     lijst = []
     date_data_recieved = datetime.now().date()
     ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
-    for data in json_data['page']['search']['resultList']['outboundFlights']:
-        arrivalAirportCode = data['arrivalAirportCode']
-        arrivalAirportName = data['arrivalAirportName']
-        arrivalDate = data['arrivalDate']
-        arrivalTime = data['arrivalTime']
-        carrierCode = data['carrierCode']
-        daysToDeparture = data['daysToDeparture']
-        departureAirportCode = data['departureAirportCode']
-        departureAirportName = data['departureAirportName']
-        departureDate = data['departureDate']
-        departureDateDifference = data['departureDateDifference']
-        departureMonth = data['departureMonth']
-        departureSeason = data['departureSeason']
-        departureTime = data['departureTime']
-        departureYear = data['departureYear']
-        directOrIndirectFlight = data['directOrIndirectFlight']
-        flightDuration = data['flightDuration']
-        flightNumber = data['flightNumber']
-        isCheapestFlight = data['isCheapestFlight']
-        limitedAvailabiltySeats = data['limitedAvailabiltySeats']
-        productID = data['productID']
-        productName = data['productName']
-        productType = data['productType']
-        thirdPartyFlightAvailable = data['thirdPartyFlightAvailable']
-        currentPrice = data['price']['currentPrice']
-        currentPricePerPerson = data['price']['currentPricePerPerson']
+    for data in json_data['flightViewData']:
+        productId = data['productId']
+        totalPrice = data['totalPrice']
+        adultPrice = data['adultPrice']
+        departDate = data['journeySummary']['departDate']
+        arrivalDate = data['journeySummary']['arrivalDate']
+        depTime = data['journeySummary']['depTime']
+        arrivalTime= data['journeySummary']['arrivalTime']
+        departAirportCode = data['journeySummary']['departAirportCode']
+        arrivalAirportCode = data['journeySummary']['arrivalAirportCode']
+        journeyType = data['journeySummary']['journeyType']
+        journeyDuration = data['journeySummary']['journeyDuration']
+        arrivalAirportName = data['journeySummary']['arrivalAirportName']
+        departAirportName = data['journeySummary']['departAirportName']
+        availableSeats = data['journeySummary']['availableSeats']
+        carrierCode = data['journeySummary']['carrierCode']
+        carrierName = data['journeySummary']['carrierName']
+        if data['journeySummary']['totalNumberOfStops'] is not None:
+            totalNumberOfStops = data['journeySummary']['totalNumberOfStops']
+        else:
+            totalNumberOfStops = 0
+            flightNumber = data['flightsectors'][0]['flightNumber']
 
-        if departureAirportCode in ORIGINS: 
-            lijst.append({'date_data_recieved':date_data_recieved,'departureDate': departureDate,'departureTime': departureTime,'arrivalAirportCode': arrivalAirportCode, 'arrivalAirportName': arrivalAirportName, 'arrivalDate': arrivalDate,
-                      'arrivalTime': arrivalTime, 'carrierCode': carrierCode, 'daysToDeparture': daysToDeparture, 'departureAirportCode': departureAirportCode,
-                      'departureAirportName': departureAirportName, 'departureDateDifference': departureDateDifference,
-                      'departureMonth': departureMonth, 'departureSeason': departureSeason, 'departureYear': departureYear,
-                      'directOrIndirectFlight': directOrIndirectFlight, 'flightDuration': flightDuration, 'flightNumber': flightNumber,
-                      'isCheapestFlight': isCheapestFlight, 'limitedAvailabiltySeats': limitedAvailabiltySeats, 'productID': productID,
-                      'productName': productName, 'productType': productType, 'thirdPartyFlightAvailable': thirdPartyFlightAvailable,
-                      'currentPrice': currentPrice,
-                      'currentPricePerPerson': currentPricePerPerson
+
+        if departAirportCode in ORIGINS: 
+            lijst.append({'date_data_recieved': date_data_recieved, 'departDate': departDate, 'arrivalDate': arrivalDate, 'flightNumber': flightNumber,'productId': productId,
+                          'depTime': depTime, 'arrivalTime': arrivalTime, 'departAirportCode': departAirportCode, 
+                          'arrivalAirportCode': arrivalAirportCode, 'journeyType': journeyType,'totalNumberOfStops':totalNumberOfStops,'journeyDuration': journeyDuration, 
+                          'arrivalAirportName': arrivalAirportName, 'departAirportName': departAirportName, 'availableSeats': availableSeats, 
+                          'carrierCode': carrierCode, 'carrierName': carrierName, 'totalPrice': totalPrice, 'adultPrice': adultPrice
                       }) 
     return pd.DataFrame(lijst)
 
@@ -86,42 +80,45 @@ def getFlightData():
     TEST = ['TFS']
     ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
     dateIn = date(2023, 4, 1)
-    dateOut = date(2023, 4, 1)
+    dateOut = date(2023, 10, 1)
     retrieveData = []
-    d = dateOut - dateIn
-    amnt = len(DESTINATION) * len(ORIGINS)
+    addDays = timedelta(days=7)
+    amnt = len(DESTINATION) * len(ORIGINS) 
 
-    for i in range(d.days + 1):
+    while dateIn <= dateOut:
+    # add a month
+        dateIn += addDays
         counter = 0
-        day = dateIn + timedelta(days=i)
-        for origin in ORIGINS:
-            for destination in TEST:
-                counter += 1
-                print(f"Date = {day} Request {counter}/{amnt}", end="\r")
-                URL = createUrl(depDate=day,
-                                flyingFrom=origin,
-                                flyingTo=destination)
+        for destination in DESTINATION :
+            counter += 1
+            print(f"Date = {dateIn} Request {counter}/{amnt}", end="\r")
+            URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
+                            flyingFrom='BRU',
+                            flyingTo=destination)
+            url = "http://www.tuifly.be/flight/nl/"
+            options = webdriver.ChromeOptions()
+            #options.add_experimental_option("detach", True)
+            options.add_argument('--ignore-certificate-errors')
+            driver_service = Service(executable_path=PATH)
+            driver = webdriver.Chrome(service=driver_service,options=options)
+            driver.maximize_window()
+            driver.implicitly_wait(25)
+            driver.get(url)
+            driver.find_element(By.CSS_SELECTOR, "#cmCloseBanner").click()
 
-                options = webdriver.ChromeOptions()
-                #options.add_experimental_option("detach", True)
-                options.add_argument('--ignore-certificate-errors')
-                driver_service = Service(executable_path=PATH)
-                driver = webdriver.Chrome(service=driver_service,
-                                          options=options)
-                #driver.maximize_window()
-                driver.implicitly_wait(25)
-                driver.get(URL)
-                driver.find_element(By.CSS_SELECTOR, "#cmCloseBanner").click()
 
-                element = WebDriverWait(driver, 50).until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR,
-                         "div#page div.container footer > script")))
-                # selection = driver.find_element(By.CSS_SELECTOR, "div#page div.container footer script")
-                result = element.get_attribute('innerHTML')
-                result = re.search(r'\((.*?)\)', result).group(1)
-                json_object = json.loads(result)
-                retrieveData.append(object_to_dataframe(json_object))
+            element = WebDriverWait(driver, 50).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div#page div.container footer > script"))
+                ) 
+
+            driver.get(URL)
+            #driver.find_element(By.CSS_SELECTOR, "#inputs__text").click()
+
+            data = driver.execute_script("return JSON.stringify(searchResultsJson)")
+            driver.close()
+            #data = re.search(r'\((.*?)\)', data).group(1)
+            json_object = json.loads(data)                
+            retrieveData.append(object_to_dataframe(json_object))
     retrieveData = pd.concat(retrieveData)
     return retrieveData
 
