@@ -56,14 +56,11 @@ def object_to_dataframe(json_data):
         availableSeats = data['journeySummary']['availableSeats']
         carrierCode = data['journeySummary']['carrierCode']
         carrierName = data['journeySummary']['carrierName']
-        if data['journeySummary']['totalNumberOfStops'] is not None:
-            totalNumberOfStops = data['journeySummary']['totalNumberOfStops']
-        else:
-            totalNumberOfStops = 0
-            flightNumber = data['flightsectors'][0]['flightNumber']
+        totalNumberOfStops = len(data['flightsectors']) -1
+        flightNumber = data['flightsectors'][0]['flightNumber']
 
 
-        if departAirportCode in ORIGINS: 
+        if departAirportCode in ORIGINS and departDate >= "2023-04-01" and departDate <= "2023-10-01": 
             lijst.append({'date_data_recieved': date_data_recieved, 'departDate': departDate, 'arrivalDate': arrivalDate, 'flightNumber': flightNumber,'productId': productId,
                           'depTime': depTime, 'arrivalTime': arrivalTime, 'departAirportCode': departAirportCode, 
                           'arrivalAirportCode': arrivalAirportCode, 'journeyType': journeyType,'totalNumberOfStops':totalNumberOfStops,'journeyDuration': journeyDuration, 
@@ -77,7 +74,6 @@ def getFlightData():
     DESTINATION = [
         'CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP',
         'PMI', 'TFS']
-    TEST = ['TFS']
     ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
     dateIn = date(2023, 4, 1)
     dateOut = date(2023, 10, 1)
@@ -86,7 +82,6 @@ def getFlightData():
     amnt = len(DESTINATION) * len(ORIGINS) 
 
     while dateIn <= dateOut:
-    # add a month
         dateIn += addDays
         counter = 0
         for destination in DESTINATION :
@@ -110,10 +105,9 @@ def getFlightData():
             element = WebDriverWait(driver, 50).until(
                     EC.presence_of_element_located((By.CSS_SELECTOR, "div#page div.container footer > script"))
                 ) 
-
             driver.get(URL)
-            #driver.find_element(By.CSS_SELECTOR, "#inputs__text").click()
 
+            #driver.find_element(By.CSS_SELECTOR, "#inputs__text").click()
             data = driver.execute_script("return JSON.stringify(searchResultsJson)")
             driver.close()
             #data = re.search(r'\((.*?)\)', data).group(1)
