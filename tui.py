@@ -79,33 +79,27 @@ def getFlightData():
     dateOut = date(2023, 10, 1)
     retrieveData = []
     addDays = timedelta(days=7)
-    amnt = len(DESTINATION) * len(ORIGINS) 
 
     while dateIn <= dateOut:
         dateIn += addDays
         counter = 0
         for destination in DESTINATION :
             counter += 1
-            print(f"Date = {dateIn} Request {counter}/{amnt}", end="\r")
             URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
                             flyingFrom='BRU',
                             flyingTo=destination)
-            url = "http://www.tuifly.be/flight/nl/"
+            
             options = webdriver.ChromeOptions()
-            #options.add_experimental_option("detach", True)
+            options.add_experimental_option("detach", True)
             options.add_argument('--ignore-certificate-errors')
             driver_service = Service(executable_path=PATH)
             driver = webdriver.Chrome(service=driver_service,options=options)
             driver.maximize_window()
             driver.implicitly_wait(25)
-            driver.get(url)
+            driver.get(URL)
             driver.find_element(By.CSS_SELECTOR, "#cmCloseBanner").click()
 
-
-            element = WebDriverWait(driver, 50).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div#page div.container footer > script"))
-                ) 
-            driver.get(URL)
+            #driver.get(URL)
 
             #driver.find_element(By.CSS_SELECTOR, "#inputs__text").click()
             data = driver.execute_script("return JSON.stringify(searchResultsJson)")
