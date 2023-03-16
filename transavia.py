@@ -59,10 +59,8 @@ def randomEvent(driver):
     # If the random number is 1, then click on the "I agree" button
     if randomN == 1:
         # Time.sleep for random amount of time
-        n = random.randint(1, 10)
-        time.sleep(n)
-        print(f"Random event: sleeping for {n} seconds")
-
+        wait(random.randint(1, 5))
+        
     elif randomN == 2:
         # Resize the window
         driver.set_window_size(random.randint(800, 1000), random.randint(800, 1000))
@@ -97,7 +95,6 @@ wait(30)
 driver.switch_to.default_content()
 
 # Go to the actual link
-
 driver.get('https://www.transavia.com/nl-BE/boek-een-vlucht/uitgebreid-zoeken/zoeken/')
 
 wait(2)
@@ -149,9 +146,6 @@ for origin in ORIGINS:
                 driver.execute_script("arguments[0].click();", option)
                 break
 
-        # Calculate the amount of months between now and 01-10-2023
-        # Get the current date
-        # Select the element with the text "Weet je al wanneer je wilt vertrekken?"
         titleElement = driver.find_elements(By.CSS_SELECTOR, "h3.h5")
         for element in titleElement:
             text = element.text
