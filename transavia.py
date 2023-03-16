@@ -114,6 +114,8 @@ results = {
     "dateRecorded": [],
 }
 
+
+
 for origin in ORIGINS:
     for destination in DESTINATIONS:
         originWrapper = driver.find_element(By.CSS_SELECTOR, "div.selectfield-wrapper.HV-gw-delete-row--bp0.AS-counties-and-cities-form-field_field-container")
@@ -173,6 +175,7 @@ for origin in ORIGINS:
                 # If the button exists, then click on it
                 button = driver.find_element(By.CSS_SELECTOR, "button.button-open.AS-destination_toggle-button")
                 button.click()
+                driver.find_element(By.CSS_SELECTOR, 'ol.bulletless.AS-time-frame-list')
             except:
                 # If the button doesn't exist, then continue
                 continue

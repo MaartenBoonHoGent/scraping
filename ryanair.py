@@ -41,6 +41,8 @@ def object_to_dataframe(json_data):
                 timeStart = flight['time'][0]
                 timeEnd = flight['time'][1]
                 segmentAmnt = len(flight['segments'])
+                if not "regularFare" in flight:
+                    continue
                 fares = flight["regularFare"]['fares'] if 'fares' in flight["regularFare"] else None
                 fareKey = flight["regularFare"]['fareKey']
                 fareClass = flight["regularFare"]['fareClass']
@@ -93,7 +95,12 @@ def object_to_dataframe(json_data):
     return pd.DataFrame(output_data)
 
 def getData():
-    DESTINATIONS = ['CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP', 'PMI', 'TFS']
+    DESTINATIONS = ['CFU', 'HER', 
+                    'RHO', 'BDS', 
+                    'NAP', 'PMO', 
+                    'FAO', 'ALC',
+                    'IBZ', 'AGP', 
+                    'PMI', 'TFS']
     ORIGINS = ['BRU', 'CRL']
     retrievedData = []
     dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
