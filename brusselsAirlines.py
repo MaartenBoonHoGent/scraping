@@ -6,34 +6,66 @@
 # except:
 #   geenVluchten = False
 from datetime import date
-from selenium import webdriver
+import time
+
+
+from seleniumwire import webdriver
+from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
+from concurrent.futures import ThreadPoolExecutor
 
 
-PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 
-landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
 
 #empty final df
 dfinal= pd.DataFrame({})
 
-options = webdriver.ChromeOptions()
-options.add_experimental_option("detach", True)
-driver_service = Service(executable_path=PATH)
-driver = webdriver.Chrome(service=driver_service,options=options)
+PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+#"Kerkyra", "brindisi", "ibiza"
 
-for bestemming in landen:
+landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife"]
+
+#opzetten parralel werken
+def set_up_threads(landen):
+  with ThreadPoolExecutor(max_workers=6) as executor:
+    return executor.map(get_landen,landen)
+
+
+def get_landen(bestemming):
   # in geval van fouten opnieuw beginnen
   opnieuw = True
   while(opnieuw):
     try:
       opnieuw = False
+      options = webdriver.ChromeOptions()
+      options.add_experimental_option("detach", True)
+      options.add_experimental_option("excludeSwitches", ["enable-automation"])
+      options.add_experimental_option('useAutomationExtension', False)
+      driver_service = Service(executable_path=PATH)
+      driver = webdriver.Chrome(service=driver_service,options=options)
+
+      stealth(driver,
+        languages=["en-US", "en"],
+        vendor="Google Inc.",
+        platform="Win32",
+        webgl_vendor="Intel Inc.",
+        renderer="Intel Iris OpenGL Engine",
+        fix_hairline=True,
+        )
+  
+
+
+
+
+  
+  
       url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
       driver.get(url)
+      
 
       #klikken voor naar juiste pagina te gaan
       r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
@@ -46,15 +78,10 @@ for bestemming in landen:
       driver.execute_script("arguments[0].click()", r)
 
 
-      #wachten tot tijd geladen is
-      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")))
+     # wachten tot tijd geladen is
+    #WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")))
 
-
-      # #datum vertrek zetten
-      # datum = driver.find_element(By.CSS_SELECTOR, "pres-datepicker-v2 div.container label.label ")
-      # datum.send_keys("01.04.2023")
-      # volgende = driver.find_element(By.CSS_SELECTOR, "button.newSearchButton")
-      # driver.execute_script("arguments[0].click()", volgende)
+      time.sleep(50)
 
 
 
@@ -78,7 +105,7 @@ for bestemming in landen:
 
           #juiste groep kiezen
           economy = r.find_element(By.CSS_SELECTOR, "pres-avail-class-info.cabin")
-          
+            
           #prijs
           #mogelijks werkende? testen wanneer land met niet beschikbare vlucht
           try:
@@ -143,10 +170,15 @@ for bestemming in landen:
           })
           #voeg dataframes samen
           dfinal = pd.concat([dfinal,df],ignore_index = True)
-          
+
+          driver.quit()
+            
 
     except:
       opnieuw = True
+      driver.quit()
 dfinal.to_csv('scraping/brusselsAirlines.csv', index=False)
 
-driver.quit()
+if __name__ == "__main__":
+    # read and generate urls
+    set_up_threads(landen)
