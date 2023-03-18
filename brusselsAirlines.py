@@ -31,7 +31,7 @@ landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", 
 
 #opzetten parralel werken
 def set_up_threads(landen):
-  with ThreadPoolExecutor(max_workers=6) as executor:
+  with ThreadPoolExecutor(max_workers=1) as executor:
     return executor.map(get_landen,landen)
 
 
@@ -57,126 +57,148 @@ def get_landen(bestemming):
         fix_hairline=True,
         )
   
-
-
-
-
-  
-  
       url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
       driver.get(url)
       
-
-      #klikken voor naar juiste pagina te gaan
-      r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
-      # LAbel has the following class: checkbox-like lh lh-checkmark-checked
-
       #enkelle reizen aanklikken 
       label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
-      print(label_click)
       driver.execute_script("arguments[0].click()", label_click) # Click the button
+      #klikken voor naar juiste pagina te gaan
+      r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
       driver.execute_script("arguments[0].click()", r)
 
 
-     # wachten tot tijd geladen is
-    #WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")))
+      # wachten tot tijd geladen is
+      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[3]/refx-page-title-pres/div/div/refx-page-title-box-pres/h1/div[2]")))
+      time.sleep(10)
 
-      time.sleep(50)
-
-
-
-      #data ophalen
-      #start
-      locaties = driver.find_element(By.CSS_SELECTOR, "span.bound")
-      start, stop = locaties.text.split(" - ")
-
+      #DATA OPHALEN
+      #start & stop locatie 
+      locaties = driver.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[3]/refx-page-title-pres/div/div/refx-page-title-box-pres/h1/div[2]")
+      start, stop = locaties.text.split(" naar ")
+      
 
       #info per reis
-      reizen = driver.find_elements(By.CSS_SELECTOR, "cont-avail.ng-tns-c78-1")
+      reizen = driver.find_elements(By.CSS_SELECTOR, "body app refx-app-layout div div.main-content.justify-content-center refx-upsell refx-basic-in-flow-layout div div.content-wrapper div:nth-child(3) div div div refx-upsell-premium-cont refx-upsell-premium-pres mat-accordion refx-upsell-premium-row-pres")
       for r in reizen:
-          #tijden splitsen in 2 voor begin en eind
-          tijden = r.find_element(By.CSS_SELECTOR, "span.time")
-          startUur, aankomstUur = tijden.text.split(" - ")
-
-
+          #tijden voor starten en stoppen      
+          startUur = r.find_element(By.CSS_SELECTOR, "div.bound-departure-datetime").text
+          aankomstUur = r.find_element(By.CSS_SELECTOR, "div.bound-arrival-datetime").text
 
           #duur
-          duur = r.find_element(By.CSS_SELECTOR, "span.duration")
+          duur = r.find_element(By.CSS_SELECTOR, "span.duration-value").text
 
-          #juiste groep kiezen
-          economy = r.find_element(By.CSS_SELECTOR, "pres-avail-class-info.cabin")
-            
-          #prijs
-          #mogelijks werkende? testen wanneer land met niet beschikbare vlucht
+          #Economy Classic nemen voor prijs en stoelen
           try:
-            prijs = economy.find_element(By.CSS_SELECTOR, "label.cabinPrice")
-            prijs2 = prijs.text.split(" ")
-            prijsresult = prijs2[1] + " " + prijs2[2]
+              button = r.find_element(By.CSS_SELECTOR, "button.mat-focus-indicator.mat-button.mat-button-base.flight-card-button.ng-star-inserted")
+              driver.execute_script("arguments[0].click()", button)
+              time.sleep(2)
+              economie = r.find_element(By.CSS_SELECTOR, "mat-expansion-panel.mat-expansion-panel")
+              economie_blokken = economie.find_elements(By.CSS_SELECTOR, "li.fare-card-list-item.ng-star-inserted")
           except:
-            prijsresult = -1
-
+            prijs = -1; stoelen = -1 #geen prijsen dus ook geen stoelen (vlucht boeken via bellen)
+          #prijs
+          try:
+            for e in economie_blokken:
+              if(e.find_element(By.CSS_SELECTOR, "div.refx-body-2.price-card-title-label").text == "Economy Classic"):
+                ec = e
+                prijs = e.find_element(By.CSS_SELECTOR, "span.price-amount").text
+                break
+          except:
+            prijs = -1; stoelen = -1 #geen vluchten voor economy classic
           #stoelen
           try:
-            stoelen = economy.find_element(By.CSS_SELECTOR, "div.seats")
-            stoelen2 = stoelen.text.split(" ")
-            stoelenresult = stoelen2[0]
+            stoel = ec.find_element(By.CSS_SELECTOR, "span.refx-caption.message-value").text
+            stoel2 = stoel.split(" ")
+            stoelen = stoel2[1]
           except:
-            stoelenresult = -1
+            stoelen = -1
 
-          #stop namen van vliegvelden
-          tussenStops = r.find_elements(By.CSS_SELECTOR, "div.detailsSecondLine span.ng-star-inserted")
-          tussenStops.pop()
-          setStops= set()
-          for x in tussenStops:
-              van, naar= x.text.split(" - ")
-              setStops.add(van)
-              setStops.add(naar)
-          setStops.remove("BRU")
+
+          # #stop namen van vliegvelden
+          # tussenStops = r.find_elements(By.CSS_SELECTOR, "div.detailsSecondLine span.ng-star-inserted")
+          # tussenStops.pop()
+          # setStops= set()
+          # for x in tussenStops:
+          #     van, naar= x.text.split(" - ")
+          #     setStops.add(van)
+          #     setStops.add(naar)
+          # setStops.remove("BRU")
 
           #stops: dit zijn niet alleen maar vliegvelden maar ook stations/ deze zien we niet in de stoppen
-          stops = r.find_element(By.CSS_SELECTOR, "span.nbStops")
-          stops2 = stops.text.split(" ")
-          stopresult = stops2[0]
-
-          #Flightnummers
-          Flightnummers = r.find_elements(By.CSS_SELECTOR, "div.availInfoAirlineContainer div.flightNumber")
-          setNummers= set()
-          for x in Flightnummers:
-            setNummers.add(x.text)
-
-          #uitvoerders vluchten
-          Uitvoerders = r.find_elements(By.CSS_SELECTOR, "div.availInfoAirlineContainer div.airlineName")
-          setUitvoerders= set()
-          for x in Uitvoerders :
-            setUitvoerders.add(x.text)
-
-          print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
+          try:
+            Aantalstops = r.find_element(By.CSS_SELECTOR, "div.bound-nb-stop span").text
+          except:
+            Aantalstops = 0
 
 
-          #add data to datafram
-          df = pd.DataFrame({
-            'datum': [date.today()],
-            'start': [start],
-            'stop': [stop],
-            'Vertrek uur':[startUur],
-            'Aankomst uur':[aankomstUur],
-            'duur':[duur.text],
-            'prijs':[prijsresult],
-            'stoelen':[stoelenresult],
-            'stops':[stopresult],
-            'tussenstop Viegvelden':[setStops],
-            'FlightNummers':[setNummers],
-            'Uitvoerders':[setUitvoerders]
-          })
-          #voeg dataframes samen
-          dfinal = pd.concat([dfinal,df],ignore_index = True)
 
-          driver.quit()
+          # gedetailleerdeknop= r.find_element(By.CSS_SELECTOR,"div.d-flex.refx-caption.ng-star-inserted")
+          # driver.execute_script("arguments[0].click()", gedetailleerdeknop)
+
+
+          # tussenStops = driver.find_elements(By.CSS_SELECTOR, "bdo.airport-code")
+          # Flightcodes = driver.find_elements(By.CSS_SELECTOR,"span.seg-marketing-flight-number.ng-star-inserted")
+          # planecodes = driver.find_elements(By.CSS_SELECTOR,"span.seg-operating-aircraft")
+          # setStops= set()
+          # for x in tussenStops:
+          #     setStops.add(x)
+          # setStops.remove('(BRU)')
+
+          # setFlightcodes=set()
+          # for x in Flightcodes:
+          #    setFlightcodes.add(x)
+
+          # setplanecodes = set()
+          # for x in planecodes:
+          #    setplanecodes.add(x)
+
+          # print(setStops)
+          # print(setFlightcodes)
+          # print(setplanecodes)
+
+
+          # #Flightnummers
+          # Flightnummers = r.find_elements(By.CSS_SELECTOR, "div.availInfoAirlineContainer div.flightNumber")
+          # setNummers= set()
+          # for x in Flightnummers:
+          #   setNummers.add(x.text)
+
+          # #uitvoerders vluchten
+          # Uitvoerders = r.find_elements(By.CSS_SELECTOR, "div.availInfoAirlineContainer div.airlineName")
+          # setUitvoerders= set()
+          # for x in Uitvoerders :
+          #   setUitvoerders.add(x.text)
+
+          # print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
+
+
+          # #add data to datafram
+          # df = pd.DataFrame({
+          #   'datum': [date.today()],
+          #   'start': [start],
+          #   'stop': [stop],
+          #   'Vertrek uur':[startUur],
+          #   'Aankomst uur':[aankomstUur],
+          #   'duur':[duur.text],
+          #   'prijs':[prijsresult],
+          #   'stoelen':[stoelenresult],
+          #   'stops':[stopresult],
+          #   'tussenstop Viegvelden':[setStops],
+          #   'FlightNummers':[setNummers],
+          #   'Uitvoerders':[setUitvoerders]
+          # })
+          # #voeg dataframes samen
+          # dfinal = pd.concat([dfinal,df],ignore_index = True)
+
+          print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen)
+      driver.quit()
             
-
     except:
       opnieuw = True
       driver.quit()
+
+
 dfinal.to_csv('scraping/brusselsAirlines.csv', index=False)
 
 if __name__ == "__main__":
