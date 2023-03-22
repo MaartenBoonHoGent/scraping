@@ -1,4 +1,3 @@
-#DE DAGEN LOPEN MAAR DE MAANDEN NOG NIET JE MOET MANUEEL DE COOKIES WEG KLIKKEN EN OP DE KNOP DOORGAAN KLIKKEN
 from datetime import date
 import time
 
@@ -30,8 +29,12 @@ def get_landen(bestemming):
   # in geval van fouten opnieuw beginnen
   opnieuw = True
   #dit is om te zeggen welke datum je moet starten om te kiezen
-  selecteerStartDag = date.today().day
-  selecteerStartMaand = date.today().month +1
+  if(date.today().month  < 4):
+    selecteerStartDag = 1
+    selecteerStartMaand = 3
+  else:
+    selecteerStartDag = date.today().day
+    selecteerStartMaand = date.today().month
   while(opnieuw):
     try:
       opnieuw = False
@@ -54,14 +57,17 @@ def get_landen(bestemming):
       url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
       driver.get(url)
 
+      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
+
       #enkelle reizen aanklikken 
       label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
       driver.execute_script("arguments[0].click()", label_click)
 
+      #openen van info
+      openen = driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")
+      driver.execute_script("arguments[0].click()", openen)
 
-      #HANDMATIG ZETTEN WANT WERKT NOG NIET
-      time.sleep(5)
-
+      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]")))
 
       #datum zetten
       open_dagen = driver.find_element(By.XPATH, "//*[@id='flightsTab']/div[4]/div[1]/div[1]/label")
@@ -73,15 +79,20 @@ def get_landen(bestemming):
       #dag selecteren
       tabel = driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[4]/table[1]")
       dagen = tabel.find_elements(By.CSS_SELECTOR, "tr.date-row td")
+
+      #beginnen van loop
       for m in range(selecteerStartMaand, len(maanden)):
         for d in dagen:
           if(d.text == str(selecteerStartDag)):
             selecteerStartDag += 1
+          
             #dag aanklikken
             driver.execute_script("arguments[0].click()", d)
+            
             #klikken voor naar juiste pagina te gaan
             r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
             driver.execute_script("arguments[0].click()", r)
+            
             # wachten tot tijd geladen is
             WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[3]/refx-page-title-pres/div/div/refx-page-title-box-pres/h1/div[2]")))
       
@@ -90,14 +101,14 @@ def get_landen(bestemming):
             locaties = driver.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[3]/refx-page-title-pres/div/div/refx-page-title-box-pres/h1/div[2]")
             start, stop = locaties.text.split(" naar ")
 
-
+            #controle of er data is
             try:
               geenData = False
               driver.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/div/refx-upsell-premium-cont/refx-upsell-premium-pres/refx-no-flights-found-pres/h2")
             except:
               geenData = True
 
-            if(geenData):
+            if(geenData): #er is data
               #info per reis
               reizen = driver.find_elements(By.CSS_SELECTOR, "body app refx-app-layout div div.main-content.justify-content-center refx-upsell refx-basic-in-flow-layout div div.content-wrapper div:nth-child(3) div div div refx-upsell-premium-cont refx-upsell-premium-pres mat-accordion refx-upsell-premium-row-pres")
               for r in reizen:
@@ -212,8 +223,11 @@ def get_landen(bestemming):
                   # dfinal = pd.concat([dfinal,df],ignore_index = True)
 
                   print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen)
+                  #We krijgen een error omdat er geen dagen meer zijn waardoor we naar opnieuw beginnen maar op de volgende dag
+              print(selecteerStartDag, selecteerStartMaand)
         selecteerStartMaand += 1
         selecteerStartDag = 1
+        print("AAAAAAAAAAAAAAAAAAAA")
 
     except:
       opnieuw = True
