@@ -12,8 +12,7 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 
 
-#empty final df
-dfinal= pd.DataFrame({})
+
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 
@@ -174,46 +173,35 @@ def get_landen(bestemming):
                   except:
                     stoelen = -1
 
-
-                  # #stop namen van vliegvelden
-                  # tussenStops = r.find_elements(By.CSS_SELECTOR, "div.detailsSecondLine span.ng-star-inserted")
-                  # tussenStops.pop()
-                  # setStops= set()
-                  # for x in tussenStops:
-                  #     van, naar= x.text.split(" - ")
-                  #     setStops.add(van)
-                  #     setStops.add(naar)
-                  # setStops.remove("BRU")
-
                   #stops: dit zijn niet alleen maar vliegvelden maar ook stations/ deze zien we niet in de stoppen
                   try:
                     Aantalstops = r.find_element(By.CSS_SELECTOR, "div.bound-nb-stop span").text
                   except:
                     Aantalstops = 0
-
-
-
-                 
-
-
-                  # #Flightnummers
-                  # Flightnummers = r.find_elements(By.CSS_SELECTOR, "div.availInfoAirlineContainer div.flightNumber")
-                  # setNummers= set()
-                  # for x in Flightnummers:
-                  #   setNummers.add(x.text)
-
-                  # #uitvoerders vluchten
-                  # Uitvoerders = r.find_elements(By.CSS_SELECTOR, "div.availInfoAirlineContainer div.airlineName")
-                  # setUitvoerders= set()
-                  # for x in Uitvoerders :
-                  #   setUitvoerders.add(x.text)
-
-                  # print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
+                    # print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
 
 
                   print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen,"VluchtCodes:",flights,"planes:",planes,"stops:",stops)
                   #We krijgen een error omdat er geen dagen meer zijn waardoor 
                   #de code opnieuw begint in de volgende dag/maand
+
+                  # #add data to datafram
+                  df = pd.DataFrame ({
+                    'datum': [date.today()],
+                    'start': [start],
+                    'stop': [stop],
+                    'Vertrek uur':[startUur],
+                    'Aankomst uur':[aankomstUur],
+                    'duur':[duur],
+                    'aantalStops':[Aantalstops],
+                    'prijs':[prijs],
+                    'stoelen':[stoelen],
+                    'tussenstop Viegvelden':[stops],
+                    'FlightNummers':[flights],
+                    'Vliegtuigen':[planes] })
+                  # #voeg dataframes samen(overbodig)
+                  # dfinal = pd.concat([dfinal,df],ignore_index = True)
+                  df.to_csv('scraping/brusselsAirlines.csv', index=False,mode='a',header=False)
             except:
               print("geen vluchten")
         selecteerStartMaand += 1
