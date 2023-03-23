@@ -79,32 +79,29 @@ def getFlightData():
     dateOut = date(2023, 10, 1)
     retrieveData = []
     addDays = timedelta(days=7)
-
+    options = webdriver.ChromeOptions()
+    driver_service = Service(executable_path=PATH)
+    driver = webdriver.Chrome(service=driver_service,options=options)
     while dateIn <= dateOut:
         dateIn += addDays
         counter = 0
         for destination in DESTINATION :
             counter += 1
+            url = "http://www.tuifly.be/flight/nl/"
             URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
                             flyingFrom='BRU',
                             flyingTo=destination)
             
-            options = webdriver.ChromeOptions()
             options.add_experimental_option("detach", True)
             options.add_argument('--ignore-certificate-errors')
-            driver_service = Service(executable_path=PATH)
-            driver = webdriver.Chrome(service=driver_service,options=options)
             driver.maximize_window()
             driver.implicitly_wait(25)
-            driver.get(URL)
+            driver.get(url)
             driver.find_element(By.CSS_SELECTOR, "#cmCloseBanner").click()
-
-            #driver.get(URL)
-
-            #driver.find_element(By.CSS_SELECTOR, "#inputs__text").click()
+            driver.get(URL)
             data = driver.execute_script("return JSON.stringify(searchResultsJson)")
             driver.close()
-            #data = re.search(r'\((.*?)\)', data).group(1)
+
             json_object = json.loads(data)                
             retrieveData.append(object_to_dataframe(json_object))
     retrieveData = pd.concat(retrieveData)
@@ -114,6 +111,6 @@ def getFlightData():
 def main():
     retrieveData = getFlightData()
     result_Data = retrieveData.drop_duplicates()            
-    result_Data.to_csv("scraping/tuifly.csv", index=False)
+    result_Data.to_csv("scraping/tuifly2.csv", index=False)
 if __name__ == "__main__":
     main()

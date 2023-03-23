@@ -1,5 +1,6 @@
     # https://www.ryanair.com/gb/en
 
+from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -12,12 +13,12 @@ def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0,
 
 def object_to_dataframe(json_data):
     output_data = []
-    termsOfUse = json_data['termsOfUse']
+    #termsOfUse = json_data['termsOfUse']
     currency = json_data['currency']
     currPrecision = json_data['currPrecision']
     # tripType = trip['tripType']
     # upgradeType = trip['upgradeType']
-    serverTimeUTC = json_data['serverTimeUTC']
+    serverTimeUTC = datetime.now().date()
     for trip in json_data['trips']:
         origin = trip['origin']
         originName = trip['originName']
@@ -27,7 +28,7 @@ def object_to_dataframe(json_data):
         tripType = trip['tripType']
         upgradeType = trip['upgradeType']
         for dat in trip['dates']:
-            dateOut = dat['dateOut']
+            dateOut = dat['dateOut'].split("T")[0]
             flights = dat['flights']
             for flight in flights:
                 faresLeft = flight['faresLeft']
@@ -36,15 +37,17 @@ def object_to_dataframe(json_data):
                 operatedBy = flight['operatedBy']
                 flightNumber = flight['flightNumber']
                 duration = flight['duration']
-                timeUTCStart = flight['timeUTC'][0]
-                timeUTCEnd = flight['timeUTC'][1]
-                timeStart = flight['time'][0]
-                timeEnd = flight['time'][1]
+                #timeUTCStart = flight['timeUTC'][0].split("T")[0]
+                #timeUTCEnd = flight['timeUTC'][1].split("T")[0]
+                timeStart = flight['time'][0].split("T")[0]
+                timeEnd = flight['time'][1].split("T")[0]
+                depTime=(flight['time'][0].split("T")[1]).split(":")[:2]
+                arrivalTime = (flight['time'][1].split("T")[1]).split(":")[:2]
                 segmentAmnt = len(flight['segments'])
                 if not "regularFare" in flight:
                     continue
                 fares = flight["regularFare"]['fares'] if 'fares' in flight["regularFare"] else None
-                fareKey = flight["regularFare"]['fareKey']
+                #fareKey = flight["regularFare"]['fareKey']
                 fareClass = flight["regularFare"]['fareClass']
                 for fare in fares:
                     fareType = fare['type']
@@ -56,42 +59,46 @@ def object_to_dataframe(json_data):
                     fareHasPromoDiscount = fare['hasPromoDiscount']
                     fareDiscountAmount = fare['discountAmount']
                     fareHasBogof = fare['hasBogof']
-                    output_data.append({
-                        "termsOfUse": termsOfUse,
-                        "currency": currency,
-                        "currPrecision": currPrecision,
-                        "serverTimeUTC": serverTimeUTC,
-                        "origin": origin,
-                        "originName": originName,
-                        "destination": destination,
-                        "destinationName": destinationName,
-                        "routeGroup": routeGroup,
-                        "tripType": tripType,
-                        "upgradeType": upgradeType,
-                        "dateOut": dateOut,
-                        "faresLeft": faresLeft,
-                        "flightKey": flightKey,
-                        "infantLeft": infantLeft,
-                        "operatedBy": operatedBy,
-                        "flightNumber": flightNumber,
-                        "duration": duration,
-                        "timeUTCStart": timeUTCStart,
-                        "timeUTCEnd": timeUTCEnd,
-                        "timeStart": timeStart,
-                        "timeEnd": timeEnd,
-                        "segmentAmnt": segmentAmnt,
-                        "fareType": fareType,
-                        "fareKey": fareKey,
-                        "fareClass": fareClass,
-                        "fareAmount": fareAmount,
-                        "fareCount": fareCount,
-                        "fareHasDiscount": fareHasDiscount,
-                        "farePublishedFare": farePublishedFare,
-                        "fareDiscountInPercent": fareDiscountInPercent,
-                        "fareHasPromoDiscount": fareHasPromoDiscount,
-                        "fareDiscountAmount": fareDiscountAmount,
-                        "fareHasBogof": fareHasBogof
-                    })
+
+                    if dateOut >= "2023-04-01" and dateOut <= "2023-10-01": 
+                        output_data.append({
+                            #"termsOfUse": termsOfUse,
+                            "serverTimeUTC": serverTimeUTC,
+                            "origin": origin,
+                            "originName": originName,
+                            "destination": destination,
+                            "destinationName": destinationName,
+                             "timeStart": timeStart,
+                            "timeEnd": timeEnd,
+                            "dateOut": dateOut,
+                            "depTime":depTime,
+                            "arrivalTime" : arrivalTime,
+                            "duration": duration,
+                            "flightNumber": flightNumber,
+                            "routeGroup": routeGroup,
+                            "tripType": tripType,
+                            "upgradeType": upgradeType,
+                            "faresLeft": faresLeft,
+                            "infantLeft": infantLeft,
+                            "operatedBy": operatedBy,
+                            #"timeUTCStart": timeUTCStart,
+                            #"timeUTCEnd": timeUTCEnd,
+                            "segmentAmnt": segmentAmnt,
+                            "fareType": fareType,
+                            #"fareKey": fareKey,
+                            "fareClass": fareClass,
+                            "fareAmount": fareAmount,
+                            "currency": currency,
+                            "currPrecision": currPrecision,
+                            "fareCount": fareCount,
+                            "fareHasDiscount": fareHasDiscount,
+                            "farePublishedFare": farePublishedFare,
+                            "fareDiscountInPercent": fareDiscountInPercent,
+                            "fareHasPromoDiscount": fareHasPromoDiscount,
+                            "fareDiscountAmount": fareDiscountAmount,
+                            "fareHasBogof": fareHasBogof,
+                            "flightKey":flightKey
+                        })
     return pd.DataFrame(output_data)
 
 def getData():
@@ -124,6 +131,7 @@ def getData():
 
 def main():
     retrievedData = getData()
-    retrievedData.to_csv("scraping/ryanair.csv", index=False)
+    result_Data = retrievedData.drop_duplicates()            
+    result_Data.to_csv("scraping/ryanair.csv", index=False)
 if __name__ == "__main__":
     main()
