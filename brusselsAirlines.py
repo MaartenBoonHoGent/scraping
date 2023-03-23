@@ -1,4 +1,5 @@
 from datetime import date
+import re
 import time
 
 from seleniumwire import webdriver
@@ -34,7 +35,7 @@ def get_landen(bestemming):
     selecteerStartMaand = 3
   else:
     selecteerStartDag = date.today().day
-    selecteerStartMaand = date.today().month
+    selecteerStartMaand = date.today().month - 1
   while(opnieuw):
     try:
       opnieuw = False
@@ -108,6 +109,41 @@ def get_landen(bestemming):
                   #tijden voor starten en stoppen      
                   startUur = r.find_element(By.CSS_SELECTOR, "div.bound-departure-datetime").text
                   aankomstUur = r.find_element(By.CSS_SELECTOR, "div.bound-arrival-datetime").text
+                  # gedetailleerdeknop= r.find_element(By.XPATH,"/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/div/refx-upsell-premium-cont/refx-upsell-premium-pres/mat-accordion/refx-upsell-premium-row-pres[1]/div/div/refx-flight-card-pres/refx-basic-flight-card-layout/div/div/div[1]/div/div[2]/div/refx-flight-details/div/div[2]/a")
+                  
+                  gedetailleerdeknop = r.find_element(By.CSS_SELECTOR,"a.itin-details-link")
+                  driver.execute_script("arguments[0].click()", gedetailleerdeknop)
+
+                  time.sleep(20)
+
+                  #allinfo= driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div/mat-dialog-container/refx-itinerary-details-dialog-pres/refx-dialog-pres/div/div[2]/div")
+                  info = driver.find_element(By.CSS_SELECTOR,"div.itinerary-details-dialog-content")
+                
+                  
+                  #print(info.text)
+                  
+                  listinfo=info.text.split()
+                  
+
+                  filterstops= re.compile(".*\(...\)")
+                  stops= set(filter(filterstops.match,listinfo))
+                  
+
+                  filterPlanes=re.compile("A[0-9]+[A-Z]*")
+                  planes= set(filter(filterPlanes.match,listinfo))
+                  
+
+                  filterFlights=re.compile("[0-9]{4}")
+                  flights=set(filter(filterFlights.match,listinfo))
+
+                  exitbutton= driver.find_element(By.CSS_SELECTOR,"button.mat-focus-indicator.close-btn-bottom.mat-stroked-button.mat-button-base.ng-star-inserted")
+                
+                  driver.execute_script("arguments[0].click()", exitbutton)
+
+
+
+
+
 
                   #duur
                   duur = r.find_element(By.CSS_SELECTOR, "span.duration-value").text
@@ -157,29 +193,7 @@ def get_landen(bestemming):
 
 
 
-                  # gedetailleerdeknop= r.find_element(By.CSS_SELECTOR,"div.d-flex.refx-caption.ng-star-inserted")
-                  # driver.execute_script("arguments[0].click()", gedetailleerdeknop)
-
-
-                  # tussenStops = driver.find_elements(By.CSS_SELECTOR, "bdo.airport-code")
-                  # Flightcodes = driver.find_elements(By.CSS_SELECTOR,"span.seg-marketing-flight-number.ng-star-inserted")
-                  # planecodes = driver.find_elements(By.CSS_SELECTOR,"span.seg-operating-aircraft")
-                  # setStops= set()
-                  # for x in tussenStops:
-                  #     setStops.add(x)
-                  # setStops.remove('(BRU)')
-
-                  # setFlightcodes=set()
-                  # for x in Flightcodes:
-                  #    setFlightcodes.add(x)
-
-                  # setplanecodes = set()
-                  # for x in planecodes:
-                  #    setplanecodes.add(x)
-
-                  # print(setStops)
-                  # print(setFlightcodes)
-                  # print(setplanecodes)
+                 
 
 
                   # #Flightnummers
@@ -197,7 +211,7 @@ def get_landen(bestemming):
                   # print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
 
 
-                  print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen)
+                  print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen,"VluchtCodes:",flights,"planes:",planes,"stops:",stops)
                   #We krijgen een error omdat er geen dagen meer zijn waardoor 
                   #de code opnieuw begint in de volgende dag/maand
             except:
