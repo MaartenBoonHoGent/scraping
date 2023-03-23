@@ -7,8 +7,8 @@ import pandas as pd
 class DataBaseConnection:
     def __init__(self) -> None:
         self._connection = None
-        self._username = "root"
-        self._password = 'Secret*$'
+        self._username = "FILLIN"
+        self._password = 'FILLIN'
         self._databaseName = "dep_database"
         self._hostName = "127.0.0.1"
         self._buildFile = "database.sql"
