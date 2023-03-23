@@ -101,14 +101,7 @@ def get_landen(bestemming):
             locaties = driver.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[3]/refx-page-title-pres/div/div/refx-page-title-box-pres/h1/div[2]")
             start, stop = locaties.text.split(" naar ")
 
-            #controle of er data is
-            try:
-              geenData = False
-              driver.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/div/refx-upsell-premium-cont/refx-upsell-premium-pres/refx-no-flights-found-pres/h2")
-            except:
-              geenData = True
-
-            if(geenData): #er is data
+            try: #er is data
               #info per reis
               reizen = driver.find_elements(By.CSS_SELECTOR, "body app refx-app-layout div div.main-content.justify-content-center refx-upsell refx-basic-in-flow-layout div div.content-wrapper div:nth-child(3) div div div refx-upsell-premium-cont refx-upsell-premium-pres mat-accordion refx-upsell-premium-row-pres")
               for r in reizen:
@@ -204,36 +197,18 @@ def get_landen(bestemming):
                   # print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
 
 
-                  # #add data to datafram
-                  # df = pd.DataFrame({
-                  #   'datum': [date.today()],
-                  #   'start': [start],
-                  #   'stop': [stop],
-                  #   'Vertrek uur':[startUur],
-                  #   'Aankomst uur':[aankomstUur],
-                  #   'duur':[duur.text],
-                  #   'prijs':[prijsresult],
-                  #   'stoelen':[stoelenresult],
-                  #   'stops':[stopresult],
-                  #   'tussenstop Viegvelden':[setStops],
-                  #   'FlightNummers':[setNummers],
-                  #   'Uitvoerders':[setUitvoerders]
-                  # })
-                  # #voeg dataframes samen
-                  # dfinal = pd.concat([dfinal,df],ignore_index = True)
-
                   print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen)
-                  #We krijgen een error omdat er geen dagen meer zijn waardoor we naar opnieuw beginnen maar op de volgende dag
-              print(selecteerStartDag, selecteerStartMaand)
+                  #We krijgen een error omdat er geen dagen meer zijn waardoor 
+                  #de code opnieuw begint in de volgende dag/maand
+            except:
+              print("geen vluchten")
         selecteerStartMaand += 1
         selecteerStartDag = 1
-        print("AAAAAAAAAAAAAAAAAAAA")
 
     except:
       opnieuw = True
       driver.quit()
 
-dfinal.to_csv('scraping/brusselsAirlines.csv', index=False)
 
 if __name__ == "__main__":
     # read and generate urls
