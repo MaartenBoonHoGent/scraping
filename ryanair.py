@@ -77,10 +77,10 @@ def object_to_dataframe(json_data):
                             "flightNumber": flightNumber,
                             "routeGroup": routeGroup,
                             "tripType": tripType,
-                            "upgradeType": upgradeType,
+                            #"upgradeType": upgradeType,
                             "faresLeft": faresLeft,
-                            "infantLeft": infantLeft,
-                            "operatedBy": operatedBy,
+                            #"infantLeft": infantLeft,
+                            #"operatedBy": operatedBy,
                             #"timeUTCStart": timeUTCStart,
                             #"timeUTCEnd": timeUTCEnd,
                             "segmentAmnt": segmentAmnt,
@@ -91,11 +91,11 @@ def object_to_dataframe(json_data):
                             "currency": currency,
                             "currPrecision": currPrecision,
                             "fareCount": fareCount,
-                            "fareHasDiscount": fareHasDiscount,
+                           # "fareHasDiscount": fareHasDiscount,
                             "farePublishedFare": farePublishedFare,
-                            "fareDiscountInPercent": fareDiscountInPercent,
-                            "fareHasPromoDiscount": fareHasPromoDiscount,
-                            "fareDiscountAmount": fareDiscountAmount,
+                            #"fareDiscountInPercent": fareDiscountInPercent,
+                            #"fareHasPromoDiscount": fareHasPromoDiscount,
+                            #"fareDiscountAmount": fareDiscountAmount,
                             "fareHasBogof": fareHasBogof,
                             "flightKey":flightKey
                         })
@@ -110,7 +110,7 @@ def getData():
                     'PMI', 'TFS']
     ORIGINS = ['BRU', 'CRL']
     retrievedData = []
-    dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
+    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
     # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
     dates = dates.strftime("%Y-%m-%d").tolist()
     amnt = len(DESTINATIONS) * len(ORIGINS) * len(dates)
@@ -119,7 +119,8 @@ def getData():
         for origin in ORIGINS:
             for destination in DESTINATIONS:
                 counter += 1
-                print(f"Request {counter}/{amnt}", end="\r")
+                #print(f"Request {counter}/{amnt}", end="\r")
+                print(f'Request {counter:2}/{amnt} {origin:3} - {destination:5} | {dateOut}', end='\r')
                 URL = createUrl(dateIn="", dateOut=dateOut, destination=destination, origin=origin)
                 page = requests.get(URL)
                 soup = BeautifulSoup(page.content, "lxml")
