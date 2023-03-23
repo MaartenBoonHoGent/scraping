@@ -41,8 +41,8 @@ def object_to_dataframe(json_data):
                 #timeUTCEnd = flight['timeUTC'][1].split("T")[0]
                 timeStart = flight['time'][0].split("T")[0]
                 timeEnd = flight['time'][1].split("T")[0]
-                depTime=(flight['time'][0].split("T")[1]).split(":")[:2]
-                arrivalTime = (flight['time'][1].split("T")[1]).split(":")[:2]
+                depTime=flight['time'][0].split("T")[1].split(".")[0]
+                arrivalTime = flight['time'][1].split("T")[1].split(".")[0]
                 segmentAmnt = len(flight['segments'])
                 if not "regularFare" in flight:
                     continue
@@ -110,7 +110,7 @@ def getData():
                     'PMI', 'TFS']
     ORIGINS = ['BRU', 'CRL']
     retrievedData = []
-    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
+    dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
     # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
     dates = dates.strftime("%Y-%m-%d").tolist()
     amnt = len(DESTINATIONS) * len(ORIGINS) * len(dates)
