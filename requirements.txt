@@ -1,0 +1,7 @@
+beautifulsoup4
+mysql-connector-python
+pandas
+requests
+selenium
+selenium-stealth
+selenium-wire
