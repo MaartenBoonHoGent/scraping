@@ -1,7 +1,8 @@
 
 import pandas as pd
 import datetime
-import databaseConnection
+from databaseConnection import DataBaseConnection
+
 if __name__ == '__main__':
     print('Hello World')
 
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     }
     df = pd.DataFrame(df)
     # Create the database connection
-    c = databaseConnection()
+    c = DataBaseConnection()
     
     # Insert the dataFrame into the database
     c.build()

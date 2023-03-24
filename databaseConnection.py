@@ -4,14 +4,19 @@ import os
 import datetime
 import pandas as pd
 
+import json
+
 class DataBaseConnection:
     def __init__(self) -> None:
+
+        inlogData = json.load(open("database/mysql_inlog.json"))
+
         self._connection = None
-        self._username = "root"
-        self._password = 'Secret*$'
+        self._username = inlogData["username"]
+        self._password = inlogData["password"]
         self._databaseName = "dep_database"
         self._hostName = "127.0.0.1"
-        self._buildFile = "database.sql"
+        self._buildFile = "database/build.sql"
 
 
 
