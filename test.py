@@ -44,3 +44,5 @@ if __name__ == '__main__':
     # Create the database connection
     c = databaseConnection()
     
+    # Insert the dataFrame into the database
+    c.build()
