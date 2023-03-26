@@ -5,3 +5,4 @@ requests
 selenium
 selenium-stealth
 selenium-wire
+numpy

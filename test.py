@@ -2,11 +2,12 @@
 import pandas as pd
 import datetime
 from databaseConnection import DataBaseConnection
+import time
 
 if __name__ == '__main__':
     print('Hello World')
 
-    """
+
     requiredColumns = {
             "maatschappij_naam": str,
             "maatschappij_code": str,
@@ -23,7 +24,6 @@ if __name__ == '__main__':
             "vertrek_tijdstip": datetime.datetime,
             "aantal_stops": int,
         }
-"""
     # Create a dataFrame 
     df = {
         "maatschappij_naam": ["KLM", "KLM", "KLM"],
@@ -41,9 +41,13 @@ if __name__ == '__main__':
         "vertrek_tijdstip": [datetime.datetime(2023, 3, 5, 17), datetime.datetime(2023, 3, 8, 9, 45), datetime.datetime(2023, 3, 11, 12, 30)],
         "aantal_stops": [1, 1, 5],
     }
-    df = pd.DataFrame(df)
+    df = pd.DataFrame.from_dict(df)
+    print(df)
     # Create the database connection
     c = DataBaseConnection()
     
-    # Insert the dataFrame into the database
+    c.delete()
     c.build()
+    c.disconnect()
+    time.sleep(2)
+    c.writeDataFrame(df)

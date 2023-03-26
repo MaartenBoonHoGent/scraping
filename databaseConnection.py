@@ -3,6 +3,7 @@ import mysql.connector
 import os
 import datetime
 import pandas as pd
+from numpy import datetime64
 
 import json
 
@@ -121,18 +122,17 @@ class DataBaseConnection:
         # Check if all the needed columns are present
         requiredColumns = {
             "maatschappij_naam": str,
-            "maatschappij_code": str,
             "vertrek_airport_code": str,
             "vertrek_luchthaven_naam": str,
             "aankomst_airport_code": str,
             "aankomst_luchthaven_naam": str,
-            "opgehaald_tijdstip": datetime.datetime,
+            "opgehaald_tijdstip": datetime64,
             "prijs": float,
             "vrije_plaatsen": int,
             "flightkey": str,
             "vluchtnummer": str,
-            "aankomst_tijdstip": datetime.datetime,
-            "vertrek_tijdstip": datetime.datetime,
+            "aankomst_tijdstip": datetime64,
+            "vertrek_tijdstip": datetime64,
             "aantal_stops": int,
         }
 
@@ -140,21 +140,31 @@ class DataBaseConnection:
             # Check if the column is present
             assert column in dataframe.columns, "Column " + column + " is not present in the dataframe"
             # Check if the column is of the correct type
-            assert dataframe[column].dtype == requiredColumns[column], f"Column {column} is not of the correct type. Expected {requiredColumns[column]}, got {dataframe[column].dtype}"
+            # Try to convert the column to the correct type
+            try:
+                dataframe[column] = dataframe[column].astype(requiredColumns[column])
+            except:
+                # If the conversion fails, raise an error
+                assert dataframe[column].dtype == requiredColumns[column], f"Column {column} is not of the correct type. Expected {requiredColumns[column]}, got {dataframe[column].dtype}"
         
-
-        # start the transaction
-        # TODO: Maatschappij 
-        # Insert the maatschappij if needed, and get the id
-        # This is done via a stored procedure called insertMaatschappij
-        # The stored procedure returns the id of the maatschappij
-        # The id is needed to insert the vlucht
-        query = "CALL insertMaatschappij(%s, %s)"
+        # Insert the dataframe into the database using stored procedure 'insert_record'
         cursor = self._connection.cursor()
-        cursor.executemany(query, dataframe[["maatschappij_naam", "maatschappij_code"]].values.tolist())
-        self._connection.commit()
+        for index, row in dataframe.iterrows():
+            cursor.callproc("insert_record", [
+                row["maatschappij_naam"],
+                row["vertrek_airport_code"],
+                row["vertrek_luchthaven_naam"],
+                row["aankomst_airport_code"],
+                row["aankomst_luchthaven_naam"],
+                row["opgehaald_tijdstip"],
+                row["prijs"],
+                row["vrije_plaatsen"],
+                row["flightkey"],
+                row["vluchtnummer"],
+                row["aankomst_tijdstip"],
+                row["vertrek_tijdstip"],
+                row["aantal_stops"],
+            ])
+
         cursor.close()
-        
-        # TODO: Luchthaven
-        # TODO: Vlucht
-        # TODO: Tijdgebaseerde data
+        self._connection.commit()
