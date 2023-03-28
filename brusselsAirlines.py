@@ -112,18 +112,15 @@ def get_landen(bestemming):
                 aankomstUur = r.find_element(By.CSS_SELECTOR, "div.bound-arrival-datetime").text
                 # gedetailleerdeknop= r.find_element(By.XPATH,"/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/div/refx-upsell-premium-cont/refx-upsell-premium-pres/mat-accordion/refx-upsell-premium-row-pres[1]/div/div/refx-flight-card-pres/refx-basic-flight-card-layout/div/div/div[1]/div/div[2]/div/refx-flight-details/div/div[2]/a")
                 
+                vertrekDatum = r.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/refx-calendar-cont/refx-calendar-pres/div/div/div").text
+
                 gedetailleerdeknop = r.find_element(By.CSS_SELECTOR,"a.itin-details-link")
                 driver.execute_script("arguments[0].click()", gedetailleerdeknop)
 
                 WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "p.itinerary-details-departure")))
 
-
-                #allinfo= driver.find_element(By.XPATH,"/html/body/div[2]/div[2]/div/mat-dialog-container/refx-itinerary-details-dialog-pres/refx-dialog-pres/div/div[2]/div")
                 info = driver.find_element(By.CSS_SELECTOR,"div.itinerary-details-dialog-content")
-              
-                
-                #print(info.text)
-                
+                              
                 listinfo=info.text.split()
                 
 
@@ -142,19 +139,14 @@ def get_landen(bestemming):
               
                 driver.execute_script("arguments[0].click()", exitbutton)
 
-
-
-
-
-
                 #duur
                 duur = r.find_element(By.CSS_SELECTOR, "span.duration-value").text
 
                 #Economy Classic nemen voor prijs en stoelen
                 try:
-                    button = r.find_element(By.CSS_SELECTOR, "button.mat-focus-indicator.mat-button.mat-button-base.flight-card-button.ng-star-inserted")
+                    button = r.find_element(By.CSS_SELECTOR, "button.mat-focus-indicator.flight-card-button-desktop-view.mat-button.mat-button-base.eco.ng-star-inserted")
                     driver.execute_script("arguments[0].click()", button)
-                    time.sleep(2)
+                    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "mat-expansion-panel.mat-expansion-panel")))
                     economie = r.find_element(By.CSS_SELECTOR, "mat-expansion-panel.mat-expansion-panel")
                     economie_blokken = economie.find_elements(By.CSS_SELECTOR, "li.fare-card-list-item.ng-star-inserted")
                 except:
@@ -190,7 +182,8 @@ def get_landen(bestemming):
 
                 # #add data to datafram
                 df = pd.DataFrame ({
-                  'datum': [date.today()],
+                  'datum_extract': [date.today()],
+                  'datum_vlucht': [vertrekDatum],
                   'start': [start],
                   'stop': [stop],
                   'Vertrek uur':[startUur],
@@ -202,14 +195,15 @@ def get_landen(bestemming):
                   'tussenstop Viegvelden':[stops],
                   'FlightNummers':[flights],
                   'Vliegtuigen':[planes] })
-                # #voeg dataframes samen(overbodig)
-                # dfinal = pd.concat([dfinal,df],ignore_index = True)
+
                 df.to_csv('scraping/brusselsAirlines.csv', index=False,mode='a',header=False)
           except:
             print("geen vluchten")
       selecteerStartMaand += 1
       selecteerStartDag = 1
 
+    #na elke dag krijgen we een except
+    #en zo resetten we
     except:
       opnieuw = True
       driver.get(url)
