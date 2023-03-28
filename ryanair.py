@@ -63,40 +63,39 @@ def object_to_dataframe(json_data):
                     if dateOut >= "2023-04-01" and dateOut <= "2023-10-01": 
                         output_data.append({
                             #"termsOfUse": termsOfUse,
-                            "serverTimeUTC": serverTimeUTC,
-                            "origin": origin,
-                            "originName": originName,
-                            "destination": destination,
-                            "destinationName": destinationName,
-                             "timeStart": timeStart,
-                            "timeEnd": timeEnd,
-                            "dateOut": dateOut,
+                            "dateDataRecieved": serverTimeUTC,
+                            "departAirportCode": origin,
+                            "departAirportName": originName,
+                            "arrivalAirportCode": destination,
+                            "arrivalAirportName": destinationName,
+                            "departDate": timeStart,
+                            "arrivalDate": timeEnd,
                             "depTime":depTime,
                             "arrivalTime" : arrivalTime,
-                            "duration": duration,
+                            "journeyDuration": duration,
                             "flightNumber": flightNumber,
                             "routeGroup": routeGroup,
-                            "tripType": tripType,
+                            "JourneyType": tripType,
                             #"upgradeType": upgradeType,
-                            "faresLeft": faresLeft,
+                            "availableSeats": faresLeft,
                             #"infantLeft": infantLeft,
                             #"operatedBy": operatedBy,
                             #"timeUTCStart": timeUTCStart,
                             #"timeUTCEnd": timeUTCEnd,
-                            "segmentAmnt": segmentAmnt,
-                            "fareType": fareType,
+                            "totalNumberOfStops": segmentAmnt,
+                            #"fareType": fareType,
                             #"fareKey": fareKey,
-                            "fareClass": fareClass,
-                            "fareAmount": fareAmount,
+                            #"fareClass": fareClass,
+                            "totalPrice": fareAmount,
                             "currency": currency,
-                            "currPrecision": currPrecision,
+                            #"currPrecision": currPrecision,
                             "fareCount": fareCount,
                            # "fareHasDiscount": fareHasDiscount,
                             "farePublishedFare": farePublishedFare,
                             #"fareDiscountInPercent": fareDiscountInPercent,
                             #"fareHasPromoDiscount": fareHasPromoDiscount,
                             #"fareDiscountAmount": fareDiscountAmount,
-                            "fareHasBogof": fareHasBogof,
+                            #"fareHasBogof": fareHasBogof,
                             "flightKey":flightKey
                         })
     return pd.DataFrame(output_data)
@@ -110,7 +109,7 @@ def getData():
                     'PMI', 'TFS']
     ORIGINS = ['BRU', 'CRL']
     retrievedData = []
-    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
+    dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
     # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
     dates = dates.strftime("%Y-%m-%d").tolist()
     amnt = len(DESTINATIONS) * len(ORIGINS) * len(dates)

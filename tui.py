@@ -42,7 +42,7 @@ def object_to_dataframe(json_data):
     for data in json_data['flightViewData']:
         productId = data['productId']
         totalPrice = data['totalPrice']
-        adultPrice = data['adultPrice']
+        #adultPrice = data['adultPrice']
         departDate = data['journeySummary']['departDate']
         arrivalDate = data['journeySummary']['arrivalDate']
         depTime = data['journeySummary']['depTime']
@@ -65,7 +65,7 @@ def object_to_dataframe(json_data):
                           'depTime': depTime, 'arrivalTime': arrivalTime, 'departAirportCode': departAirportCode, 
                           'arrivalAirportCode': arrivalAirportCode, 'journeyType': journeyType,'totalNumberOfStops':totalNumberOfStops,'journeyDuration': journeyDuration, 
                           'arrivalAirportName': arrivalAirportName, 'departAirportName': departAirportName, 'availableSeats': availableSeats, 
-                          'carrierCode': carrierCode, 'carrierName': carrierName, 'totalPrice': totalPrice, 'adultPrice': adultPrice
+                          'carrierCode': carrierCode, 'carrierName': carrierName, 'totalPrice': totalPrice,
                       }) 
     return pd.DataFrame(lijst)
 
