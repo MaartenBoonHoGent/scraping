@@ -61,20 +61,18 @@ for bestemming in landen:
   #dit is om te zeggen welke datum je moet starten om te kiezen
   if(date.today().month  < 4):
     selecteerStartDag = 29
-    selecteerStartMaand = 3
+    selecteerStartMaand = 9
   else:
     selecteerStartDag = date.today().day
     selecteerStartMaand = date.today().month - 1
 
  
-
   url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
   driver.get(url)
   while(opnieuw):
     try:
       opnieuw = False
      
-
       WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
 
       #enkelle reizen aanklikken 
@@ -99,7 +97,6 @@ for bestemming in landen:
       dagen = tabel.find_elements(By.CSS_SELECTOR, "tr.date-row td")
 
       #beginnen van loop
-      
       for d in dagen:
         if(d.text == str(selecteerStartDag)):
           selecteerStartDag += 1
@@ -218,6 +215,8 @@ for bestemming in landen:
             print("geen vluchten")
       selecteerStartMaand += 1
       selecteerStartDag = 1
+      if(selecteerStartMaand == 10):
+        break
 
     #na elke dag krijgen we een except
     #en zo resetten we
