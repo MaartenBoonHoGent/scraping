@@ -13,44 +13,60 @@ from concurrent.futures import ThreadPoolExecutor
 
 
 
+df = pd.DataFrame ({
+                  'datum_extract': [],
+                  'datum_vlucht': [],
+                  'start': [],
+                  'stop': [],
+                  'Vertrek uur':[],
+                  'Aankomst uur':[],
+                  'duur':[],
+                  'aantalStops':[],
+                  'prijs':[],
+                  'stoelen':[],
+                  'tussenstop Viegvelden':[],
+                  'FlightNummers':[],
+                  'Vliegtuigen':[] })
+
+df.to_csv('scraping/brusselsAirlines.csv', index=False)
+
+
+
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 
 landen = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
 maanden = ["", "", "", "APRIL", "MEI", "JUNI", "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER"]
 
-#opzetten parralel werken
-def set_up_threads(landen):
-  with ThreadPoolExecutor(max_workers=1) as executor:
-    return executor.map(get_landen,landen)
+options = webdriver.ChromeOptions()
+options.add_experimental_option("detach", True)
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
+options.add_experimental_option('useAutomationExtension', False)
+driver_service = Service(executable_path=PATH)
+driver = webdriver.Chrome(service=driver_service,options=options)
+
+stealth(driver,
+  languages=["en-US", "en"],
+  vendor="Google Inc.",
+  platform="Win32",
+  webgl_vendor="Intel Inc.",
+  renderer="Intel Iris OpenGL Engine",
+  fix_hairline=True,
+  )
 
 
-def get_landen(bestemming):
+for bestemming in landen:
   # in geval van fouten opnieuw beginnen
   opnieuw = True
   #dit is om te zeggen welke datum je moet starten om te kiezen
   if(date.today().month  < 4):
-    selecteerStartDag = 1
+    selecteerStartDag = 29
     selecteerStartMaand = 3
   else:
     selecteerStartDag = date.today().day
     selecteerStartMaand = date.today().month - 1
 
-  options = webdriver.ChromeOptions()
-  options.add_experimental_option("detach", True)
-  options.add_experimental_option("excludeSwitches", ["enable-automation"])
-  options.add_experimental_option('useAutomationExtension', False)
-  driver_service = Service(executable_path=PATH)
-  driver = webdriver.Chrome(service=driver_service,options=options)
-
-  stealth(driver,
-    languages=["en-US", "en"],
-    vendor="Google Inc.",
-    platform="Win32",
-    webgl_vendor="Intel Inc.",
-    renderer="Intel Iris OpenGL Engine",
-    fix_hairline=True,
-    )
+ 
 
   url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
   driver.get(url)
@@ -59,7 +75,7 @@ def get_landen(bestemming):
       opnieuw = False
      
 
-      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
+      WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
 
       #enkelle reizen aanklikken 
       label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
@@ -69,7 +85,7 @@ def get_landen(bestemming):
       openen = driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")
       driver.execute_script("arguments[0].click()", openen)
 
-      WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]")))
+      WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]")))
 
       #datum zetten
       open_dagen = driver.find_element(By.XPATH, "//*[@id='flightsTab']/div[4]/div[1]/div[1]/label")
@@ -96,7 +112,8 @@ def get_landen(bestemming):
           driver.execute_script("arguments[0].click()", r)
           
           # wachten tot tijd geladen is
-          WebDriverWait(driver, 60).until(EC.presence_of_element_located((By.XPATH, "//*[@id='cdk-accordion-child-1']/div/refx-carousel/div/ul")))
+          WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
+          time.sleep(2)
     
           #DATA OPHALEN
           #start & stop locatie 
@@ -117,7 +134,7 @@ def get_landen(bestemming):
                 gedetailleerdeknop = r.find_element(By.CSS_SELECTOR,"a.itin-details-link")
                 driver.execute_script("arguments[0].click()", gedetailleerdeknop)
 
-                WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "p.itinerary-details-departure")))
+                WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.CSS_SELECTOR, "p.itinerary-details-departure")))
 
                 info = driver.find_element(By.CSS_SELECTOR,"div.itinerary-details-dialog-content")
                               
@@ -146,7 +163,7 @@ def get_landen(bestemming):
                 try:
                     button = r.find_element(By.CSS_SELECTOR, "button.mat-focus-indicator.flight-card-button-desktop-view.mat-button.mat-button-base.eco.ng-star-inserted")
                     driver.execute_script("arguments[0].click()", button)
-                    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "mat-expansion-panel.mat-expansion-panel")))
+                    WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.CSS_SELECTOR, "mat-expansion-panel.mat-expansion-panel")))
                     economie = r.find_element(By.CSS_SELECTOR, "mat-expansion-panel.mat-expansion-panel")
                     economie_blokken = economie.find_elements(By.CSS_SELECTOR, "li.fare-card-list-item.ng-star-inserted")
                 except:
@@ -181,7 +198,7 @@ def get_landen(bestemming):
                 #de code opnieuw begint in de volgende dag/maand
 
                 # #add data to datafram
-                df = pd.DataFrame ({
+                df2 = pd.DataFrame ({
                   'datum_extract': [date.today()],
                   'datum_vlucht': [vertrekDatum],
                   'start': [start],
@@ -196,7 +213,7 @@ def get_landen(bestemming):
                   'FlightNummers':[flights],
                   'Vliegtuigen':[planes] })
 
-                df.to_csv('scraping/brusselsAirlines.csv', index=False,mode='a',header=False)
+                df2.to_csv('scraping/brusselsAirlines.csv', index=False,mode='a',header=False)
           except:
             print("geen vluchten")
       selecteerStartMaand += 1
@@ -209,6 +226,3 @@ def get_landen(bestemming):
       driver.get(url)
 
 
-if __name__ == "__main__":
-    # read and generate urls
-    set_up_threads(landen)
