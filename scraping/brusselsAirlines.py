@@ -1,6 +1,5 @@
 from datetime import date
 import re
-import time
 
 from seleniumwire import webdriver
 from selenium_stealth import stealth
@@ -9,7 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
-from concurrent.futures import ThreadPoolExecutor
 
 
 def runBrusselsAirlines():
@@ -60,17 +58,16 @@ def runBrusselsAirlines():
     opnieuw = True
     #dit is om te zeggen welke datum je moet starten om te kiezen
     if(date.today().month  < 4):
-      selecteerStartDag = 31
-      selecteerStartMaand = 7
+      selecteerStartDag = 1
+      selecteerStartMaand = 3
     else:
       selecteerStartDag = date.today().day
       selecteerStartMaand = date.today().month - 1
 
-  
     url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
+   
     while(opnieuw or (selecteerStartMaand != 10 and selecteerStartDag != 32)):
       driver.get(url)
-
       try:
         opnieuw = False
 
@@ -127,6 +124,22 @@ def runBrusselsAirlines():
                   # gedetailleerdeknop= r.find_element(By.XPATH,"/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/div/refx-upsell-premium-cont/refx-upsell-premium-pres/mat-accordion/refx-upsell-premium-row-pres[1]/div/div/refx-flight-card-pres/refx-basic-flight-card-layout/div/div/div[1]/div/div[2]/div/refx-flight-details/div/div[2]/a")
                   
                   vertrekDatum = r.find_element(By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[5]/div[3]/div/div/refx-calendar-cont/refx-calendar-pres/div/div/div").text
+                  datumzin = vertrekDatum.split()
+                  datumzin.pop(0)
+                  maanden2 ={
+                  "april" : "04",
+                  "mei" : "05",
+                  "juni" : "06",
+                  "juli" : "07",
+                  "augustus":"08",
+                  "september":"09",
+                  "oktober":"10"
+                  }
+
+                  if int(datumzin[0]) < 10:
+                    realdate="{}-{}-0{}".format(datumzin[2],maanden2[datumzin[1]],datumzin[0])
+                  else: 
+                    realdate="{}-{}-{}".format(datumzin[2],maanden2[datumzin[1]],datumzin[0])
 
                   gedetailleerdeknop = r.find_element(By.CSS_SELECTOR,"a.itin-details-link")
                   driver.execute_script("arguments[0].click()", gedetailleerdeknop)
@@ -190,14 +203,14 @@ def runBrusselsAirlines():
                     # print("\ndatum:", date.today(),  "   start:", start, "   stop:", stop, "\nVertrek uur:", startUur, "  Aankomst uur:", aankomstUur, " duur:", duur.text, "\nprijs:", prijsresult, " stoelen:", stoelenresult, "\nstops:", stopresult, " tussenstop Vliegvelden:", setStops, " FlightNummers:", setNummers, " Uitvoerders:", setUitvoerders)
 
 
-                  print("start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen,"VluchtCodes:",flights,"planes:",planes,"stops:",stops)
+                  print("VertrekDag", realdate, "start:", start, "   stop:", stop, " duur:", duur, " \nstartUur:", startUur, " aankomstUur:", aankomstUur, " AantalStops:", Aantalstops, "\nprijs:", prijs, " stoelen:", stoelen,"VluchtCodes:",flights,"planes:",planes,"stops:",stops)
                   #We krijgen een error omdat er geen dagen meer zijn waardoor 
                   #de code opnieuw begint in de volgende dag/maand
 
                   # #add data to datafram
                   df2 = pd.DataFrame ({
                     'datum_extract': [date.today()],
-                    'datum_vlucht': [vertrekDatum],
+                    'datum_vlucht': [realdate],
                     'start': [start],
                     'stop': [stop],
                     'Vertrek uur':[startUur],
@@ -215,8 +228,6 @@ def runBrusselsAirlines():
               print("geen vluchten")
         selecteerStartMaand += 1
         selecteerStartDag = 1
-        if(selecteerStartMaand == 10):
-          break
 
       #na elke dag krijgen we een except
       #en zo resetten we
