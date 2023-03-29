@@ -60,19 +60,20 @@ def runBrusselsAirlines():
     opnieuw = True
     #dit is om te zeggen welke datum je moet starten om te kiezen
     if(date.today().month  < 4):
-      selecteerStartDag = 29
-      selecteerStartMaand = 9
+      selecteerStartDag = 31
+      selecteerStartMaand = 7
     else:
       selecteerStartDag = date.today().day
       selecteerStartMaand = date.today().month - 1
 
   
     url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
-    driver.get(url)
-    while(opnieuw):
+    while(opnieuw or (selecteerStartMaand != 10 and selecteerStartDag != 32)):
+      driver.get(url)
+
       try:
         opnieuw = False
-      
+
         WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
 
         #enkelle reizen aanklikken 
@@ -109,8 +110,7 @@ def runBrusselsAirlines():
             driver.execute_script("arguments[0].click()", r)
             
             # wachten tot tijd geladen is
-            WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
-            time.sleep(2)
+            WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
       
             #DATA OPHALEN
             #start & stop locatie 
