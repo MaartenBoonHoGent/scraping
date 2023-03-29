@@ -76,13 +76,11 @@ def getFlightData():
     if datetime.now().date() <= date(2021, 4, 1):
         dateIn = date(2023, 4, 1)
     else:
-        dateIn = datetime.now().date()
+        dateIn = date(datetime.now().year, datetime.now().month,
+                      datetime.now().day)
     dateOut = date(2023, 10, 1)
     retrieveData = []
     addDays = timedelta(days=7)
-    options = webdriver.ChromeOptions()
-    driver_service = Service(executable_path=PATH)
-    driver = webdriver.Chrome(service=driver_service, options=options)
     while dateIn <= dateOut:
         dateIn += addDays
         counter = 0
@@ -92,7 +90,9 @@ def getFlightData():
             URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
                             flyingFrom='BRU',
                             flyingTo=destination)
-
+            options = webdriver.ChromeOptions()
+            driver_service = Service(executable_path=PATH)
+            driver = webdriver.Chrome(service=driver_service, options=options)
             options.add_experimental_option("detach", True)
             options.add_argument('--ignore-certificate-errors')
             driver.maximize_window()
@@ -107,13 +107,19 @@ def getFlightData():
             json_object = json.loads(data)
             retrieveData.append(object_to_dataframe(json_object))
     retrieveData = pd.concat(retrieveData)
+    result_Data = retrieveData.drop_duplicates()
     return retrieveData
 
 
 def main():
     retrieveData = getFlightData()
     result_Data = retrieveData.drop_duplicates()
+<<<<<<< HEAD:scraping/tui.py
     result_Data.to_csv("./data/tuifly.csv", index=False)
+=======
+    result_Data.to_csv("scraping/tuifly.csv", index=False)
+    result_Data.to_csv("scraping/tuifly2.csv", index=False)
+>>>>>>> 632f5f1969abda679d6644defeb51a27ed1e3d99:tui.py
 
 
 if __name__ == "__main__":

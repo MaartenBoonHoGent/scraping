@@ -103,7 +103,7 @@ def object_to_dataframe(json_data):
     return pd.DataFrame(output_data)
 
 
-def getData():
+def getDataRyanair():
     DESTINATIONS = ['CFU', 'HER',
                     'RHO', 'BDS',
                     'NAP', 'PMO',
@@ -136,11 +136,12 @@ def getData():
                 json_object = json.loads(result)
                 retrievedData.append(object_to_dataframe(json_object))
     retrievedData = pd.concat(retrievedData)
+    retrievedData = retrievedData.drop_duplicates()
     return retrievedData
 
 
 def main():
-    retrievedData = getData()
+    retrievedData = getDataRyanair()
     result_Data = retrievedData.drop_duplicates()
     result_Data.to_csv("scraping/ryanair.csv", index=False)
 
