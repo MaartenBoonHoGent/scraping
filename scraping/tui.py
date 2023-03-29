@@ -113,7 +113,7 @@ def getFlightData():
 def main():
     retrieveData = getFlightData()
     result_Data = retrieveData.drop_duplicates()
-    result_Data.to_csv("scraping/tuifly2.csv", index=False)
+    result_Data.to_csv("./data/tuifly.csv", index=False)
 
 
 if __name__ == "__main__":
