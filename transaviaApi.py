@@ -65,31 +65,30 @@ def convertToDataFrame(data: dict) -> pd.DataFrame:
         df.rename(columns=renames, inplace=True)
         return df
     return None
-
-
-DESTINATIONS = [
-    ['CFU', 'Corfu'],
-    ['HER', 'Heraklion'],
-    ['RHO', 'Rhodos'],
-    ['BDS', 'Bari'],
-    ['NAP', 'Napels'],
-    ['PMO', 'Palermo'],
-    ['FAO', 'Faro'],
-    ['ALC', 'Alicante'],
-    ['IBZ', 'Ibiza'],
-    ['AGP', 'Malaga'],
-    ['PMI', 'Palma de Mallorca'],
-    ['TFS', 'Tenerife'],
-]
-ORIGINS = [['BRU', "Brussel"]]
-# Create the dates
-dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
-# Convert to a list of datetime objects
-dates = dates.to_pydatetime().tolist()
-# Select with an interval of 30 days
-dates = dates[::30]
-
 def run():
+    
+    DESTINATIONS = [
+        ['CFU', 'Corfu'],
+        ['HER', 'Heraklion'],
+        ['RHO', 'Rhodos'],
+        ['BDS', 'Bari'],
+        ['NAP', 'Napels'],
+        ['PMO', 'Palermo'],
+        ['FAO', 'Faro'],
+        ['ALC', 'Alicante'],
+        ['IBZ', 'Ibiza'],
+        ['AGP', 'Malaga'],
+        ['PMI', 'Palma de Mallorca'],
+        ['TFS', 'Tenerife'],
+    ]
+    ORIGINS = [['BRU', "Brussel"]]
+    # Create the dates
+    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
+    # Convert to a list of datetime objects
+    dates = dates.to_pydatetime().tolist()
+    # Select with an interval of 30 days
+    dates = dates[::30]
+
     # Remove the csv file if it exists
     if os.path.exists(FILE):
         os.remove(FILE)

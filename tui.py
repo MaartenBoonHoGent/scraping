@@ -107,13 +107,18 @@ def getFlightData():
             json_object = json.loads(data)
             retrieveData.append(object_to_dataframe(json_object))
     retrieveData = pd.concat(retrieveData)
+    result_Data = retrieveData.drop_duplicates()
     return retrieveData
 
 
 def main():
     retrieveData = getFlightData()
+<<<<<<< HEAD
     result_Data = retrieveData.drop_duplicates()
     result_Data.to_csv("scraping/tuifly.csv", index=False)
+=======
+    result_Data.to_csv("scraping/tuifly2.csv", index=False)
+>>>>>>> 15f31138c047c4270956184ac759c262bd4c6ab5
 
 
 if __name__ == "__main__":
