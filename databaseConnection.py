@@ -96,7 +96,10 @@ class DataBaseConnection:
         cursor.execute("CREATE DATABASE IF NOT EXISTS " + self._databaseName)
         cursor.close()
 
-        os.popen("mysql -u " + self._username + " -p" + self._password + " " + self._databaseName + " < " + self._buildFile)
+        if self._password == "":
+            os.popen("mysql -u " + self._username + " " + self._databaseName + " < " + self._buildFile)
+        else:
+            os.popen("mysql -u " + self._username + " -p" + self._password + " " + self._databaseName + " < " + self._buildFile)
         self.disconnect()
         self.connect()
 
