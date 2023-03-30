@@ -112,8 +112,12 @@ def getFlightData():
 def main():
     retrieveData = getFlightData()
     result_Data = retrieveData.drop_duplicates()
+<<<<<<< HEAD:scraping/tui.py
+    result_Data.to_csv("./data/tuifly.csv", index=False)
+=======
     result_Data.to_csv("scraping/tuifly.csv", index=False)
     result_Data.to_csv("scraping/tuifly2.csv", index=False)
+>>>>>>> 632f5f1969abda679d6644defeb51a27ed1e3d99:tui.py
 
 
 if __name__ == "__main__":
