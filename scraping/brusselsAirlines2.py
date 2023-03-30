@@ -15,6 +15,7 @@ import gzip
 import io
 import urllib.request
 import json
+import pandas as pd
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 def createDriver():
@@ -35,14 +36,51 @@ def createDriver():
 
 LANDEN = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
 MAANDEN = ["", "", "", "APRIL", "MEI", "JUNI", "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER"]
+TEST= ["palermo-sicilie"]
 
+def object_to_dataframe(json_data):
+    lijst = []
+    date_data_recieved = datetime.now().date()
+    for data in json_data['data']['airBoundGroups']:
+        arrivalAirportCode = data['boundDetails']['originLocationCode']
+        departAirportCode = data['boundDetails']['destinationLocationCode']
+        journeyDuration = data['boundDetails']['duration']
+        totalNumberOfStops = len(data['boundDetails']['segments']) - 1
+        if data['boundDetails'].contains('segments'):
+            for segment in data['boundDetails']['segments']:
+                flightId = segment['flightId']
+                if segment.contains('connectionTime'):
+                    connectionTime = segment['connectionTime']
+                for flight in json_data['dictionaries']['flight']['flightId']:
+                    depTime=flight['departure']['dateTime']
+                    arrivalTime=flight['arrival']['dateTime']
+        else:
+            flightId = segment['flightId']
+            for flight in json_data['dictionaries']['flight']['flightId']:
+                    depTime=flight['departure']['dateTime']
+                    arrivalTime=flight['arrival']['dateTime']
 
-def main():
+        for bounds in data['airBounds'][1]:
+            availableSeats = bounds['availabilityDetails']['quota']
+            basePrice = bounds['prices']['totalPrices']['base']
+            totalPrice = bounds['prices']['totalPrices']['total']
+            tax = bounds['prices']['totalPrices']['totalTaxes']
+    
+
+            lijst.append({ 'date_data_recieved': date_data_recieved, 'depTime': depTime, 'arrivalTime': arrivalTime, 
+                          'arrivalAirportCode': arrivalAirportCode, 'departAirportCode': departAirportCode, 'journeyDuration': journeyDuration, 
+                          'totalNumberOfStops': totalNumberOfStops, 'connectionTime':connectionTime,'flightId': flightId, 'availableSeats': availableSeats, 
+                          'basePrice': basePrice, 'totalPrice': totalPrice, 'tax': tax
+
+            })
+    return pd.DataFrame(lijst)
+
+def getData():
     # Create the driver
     driver = createDriver()
     print(f"Driver created | {str(datetime.datetime.now())}")
     # Go to the website
-    for bestemming in LANDEN:
+    for bestemming in TEST:
         # in geval van fouten opnieuw beginnen
         opnieuw = True
         #dit is om te zeggen welke datum je moet starten om te kiezen
@@ -55,7 +93,7 @@ def main():
 
         url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
         print(f"Bestemming {bestemming} | {str(datetime.datetime.now())}")
-        while(opnieuw or (selecteerStartMaand != 10 and selecteerStartDag != 32)):
+        while(opnieuw or (selecteerStartMaand !=4  and selecteerStartDag != 2)):
             driver.get(url)
             try:
                 opnieuw = False
@@ -84,7 +122,7 @@ def main():
 
                 #beginnen van loop
                 for d in dagen:
-                    print(f"dag: {d} | {str(datetime.datetime.now())}", end="\r")
+                    retrievedData = []
                     if(d.text == str(selecteerStartDag)):
                         selecteerStartDag += 1
                     
@@ -101,10 +139,10 @@ def main():
 
                         # Getting the object
                         responseBody = None
-
+                        print("dag:",str(selecteerStartDag) , " maand:" , str(selecteerStartMaand), "dest:" , bestemming)
+                              
                         for request in driver.requests:
                             if request.response:
-                                print(request.url.lower())
                                 if 'air-bounds' in request.url.lower():
                                     responseBody = io.BytesIO(request.response.body)
                                     break
@@ -114,13 +152,22 @@ def main():
                             content = f.read()
 
                         content = json.loads(content.decode('utf-8'))
-                        print(content, type(content))
+                        retrievedData.append(object_to_dataframe(content))
+            except:
+                opnieuw = True
+                driver.get(url) 
+    retrievedData = pd.concat(content)
+    return retrievedData
                         
             #na elke dag krijgen we een except
             #en zo resetten we
-            except:
-                opnieuw = True
-                driver.get(url)
+            
+
+def main():
+    retrievedData = getData()
+    result_Data = retrievedData.drop_duplicates()
+    result_Data.to_csv("BruAir.csv", index=False)
 
 if __name__ == "__main__":
     main()
+    
