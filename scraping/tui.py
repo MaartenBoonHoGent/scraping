@@ -69,8 +69,10 @@ def object_to_dataframe(json_data):
 
 
 def getFlightData():
-    DESTINATION = ['RHO',]
-    ORIGINS = ['LGG']
+    DESTINATION = [
+        'CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP',
+        'PMI', 'TFS']
+    ORIGINS = ['OST', 'ANR', 'BRU', 'LGG']
     if datetime.now().date() <= date(2021, 4, 1):
         dateIn = date(2023, 4, 1)
     else:
