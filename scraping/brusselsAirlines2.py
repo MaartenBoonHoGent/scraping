@@ -16,6 +16,8 @@ import io
 import urllib.request
 import json
 import pandas as pd
+import os
+import traceback
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 def createDriver():
@@ -40,25 +42,26 @@ TEST= ["palermo-sicilie"]
 
 def object_to_dataframe(json_data):
     lijst = []
-    date_data_recieved = datetime.now().date()
+    date_data_recieved = datetime.datetime.now().date()
     for data in json_data['data']['airBoundGroups']:
         arrivalAirportCode = data['boundDetails']['originLocationCode']
         departAirportCode = data['boundDetails']['destinationLocationCode']
         journeyDuration = data['boundDetails']['duration']
         totalNumberOfStops = len(data['boundDetails']['segments']) - 1
-        if data['boundDetails'].contains('segments'):
+
+        if 'segments' in data['boundDetails']:
             for segment in data['boundDetails']['segments']:
                 flightId = segment['flightId']
-                if segment.contains('connectionTime'):
+                if 'connectionTime' in segment:
                     connectionTime = segment['connectionTime']
-                for flight in json_data['dictionaries']['flight']['flightId']:
+                for flight in json_data['dictionaries']['flight'][flightId]:
                     depTime=flight['departure']['dateTime']
                     arrivalTime=flight['arrival']['dateTime']
         else:
-            flightId = segment['flightId']
-            for flight in json_data['dictionaries']['flight']['flightId']:
-                    depTime=flight['departure']['dateTime']
-                    arrivalTime=flight['arrival']['dateTime']
+            flightId = data['boundDetails']['flightId']
+            for flight in json_data['dictionaries']['flight'][flightId]:
+                    depTime = flight['departure']['dateTime']
+                    arrivalTime = flight['arrival']['dateTime']
 
         for bounds in data['airBounds'][1]:
             availableSeats = bounds['availabilityDetails']['quota']
@@ -152,8 +155,12 @@ def getData():
                             content = f.read()
 
                         content = json.loads(content.decode('utf-8'))
-                        retrievedData.append(object_to_dataframe(content))
-            except:
+                        content = object_to_dataframe(content)
+                        print(content)
+                        content.to_csv("BruAir.csv", mode=('a' if os.path.exists("BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
+            except Exception as e:
+                print(traceback.format_exc())
+                exit(0)
                 opnieuw = True
                 driver.get(url) 
     retrievedData = pd.concat(content)
