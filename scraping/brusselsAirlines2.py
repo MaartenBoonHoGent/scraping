@@ -91,10 +91,20 @@ def main():
                         driver.execute_script("arguments[0].click()", r)
                         
                         # wachten tot tijd geladen is
-                        print(f"LADEN, | {str(datetime.datetime.now())}")
-                        time.sleep(5)
                         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
 
+
+                        # Getting the object
+                        responseBody = None
+
+                        for request in driver.requests:
+                            if request.response:
+                                if 'air-bounds' in request.url:
+                                    responseBody = request.response.body
+                                    break
+                        print(f"responseBody: {responseBody} | {str(datetime.datetime.now())}")
+                        print(f"Sleeping 60s | {str(datetime.datetime.now())}")
+                        time.sleep(60)
             #na elke dag krijgen we een except
             #en zo resetten we
             except:

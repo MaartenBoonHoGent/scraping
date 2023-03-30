@@ -1,1 +1,6 @@
 datum_extract,datum_vlucht,start,stop,Vertrek uur,Aankomst uur,duur,aantalStops,prijs,stoelen,tussenstop Viegvelden,FlightNummers,Vliegtuigen
+2023-03-30,2023-04-01,Brussel,Palermo,06:55,11:05,4h 10m,1,"347,58",3,"{'(MUC)', '(PMO)', '(BRU)'}","{'5629', '1914', '2023'}","{'A320', 'A319'}"
+2023-03-30,2023-04-01,Brussel,Palermo,09:45,13:55,4h 10m,1,"347,25",4,"{'(ZRH)', '(PMO)', '(BRU)'}","{'1742', '2023'}","{'A320', 'A220-300'}"
+2023-03-30,2023-04-01,Brussel,Palermo,08:50,16:35,7h 45m,1,"347,58",1,"{'(MUC)', '(PMO)', '(BRU)'}","{'2283', '1916', '2023'}","{'A321', 'A320'}"
+2023-03-30,2023-04-01,Brussel,Palermo,06:55,16:35,9h 40m,1,"347,58",1,"{'(MUC)', '(PMO)', '(BRU)'}","{'5629', '1916', '2023'}","{'A320', 'A319'}"
+2023-03-30,2023-04-01,Brussel,Palermo,20:45,11:05,14h 20m,1,"354,67",3,"{'(MUC)', '(PMO)', '(BRU)'}","{'1914', '2291', '2023'}","{'A320', 'A319'}"
