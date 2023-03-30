@@ -59,7 +59,7 @@ def object_to_dataframe(json_data):
                     farePublishedFare = fare['publishedFare']
                     # fareDiscountInPercent = fare['discountInPercent']
                     # fareHasPromoDiscount = fare['hasPromoDiscount']
-                    # fareDiscountAmount = fare['discountAmount']
+                    fareDiscountAmount = fare['discountAmount']
                     # fareHasBogof = fare['hasBogof']
 
                     if dateOut >= "2023-04-01" and dateOut <= "2023-10-01":
@@ -96,7 +96,7 @@ def object_to_dataframe(json_data):
                             "farePublishedFare": farePublishedFare,
                             # "fareDiscountInPercent": fareDiscountInPercent,
                             # "fareHasPromoDiscount": fareHasPromoDiscount,
-                            # "fareDiscountAmount": fareDiscountAmount,
+                            "fareDiscountAmount": fareDiscountAmount,
                             # "fareHasBogof": fareHasBogof,
                             "flightKey": flightKey
                         })
@@ -143,7 +143,7 @@ def getDataRyanair():
 def main():
     retrievedData = getDataRyanair()
     result_Data = retrievedData.drop_duplicates()
-    result_Data.to_csv("scraping/ryanair.csv", index=False)
+    result_Data.to_csv("./data/ryanair.csv", index=False)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ import json
 from typing import List
 
 APIKEY = '17c5625ff4424000b95a0ae6f3a23586'
-FILE = 'scraping/transaviaApi.csv'
+FILE = './data/transaviaApi.csv'
 
 headers = {'apikey': APIKEY}
 renames = {
