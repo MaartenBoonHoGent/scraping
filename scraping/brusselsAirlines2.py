@@ -8,8 +8,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from datetime import date
+import time
 import datetime
 import re
+import gzip
+import io
+import urllib.request
+import json
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 def createDriver():
@@ -99,12 +104,18 @@ def main():
 
                         for request in driver.requests:
                             if request.response:
-                                if 'air-bounds' in request.url:
-                                    responseBody = request.response.body
+                                print(request.url.lower())
+                                if 'air-bounds' in request.url.lower():
+                                    responseBody = io.BytesIO(request.response.body)
                                     break
-                        print(f"responseBody: {responseBody} | {str(datetime.datetime.now())}")
-                        print(f"Sleeping 60s | {str(datetime.datetime.now())}")
-                        time.sleep(60)
+
+                        # Decompress the gzipped content
+                        with gzip.GzipFile(fileobj=responseBody) as f:
+                            content = f.read()
+
+                        content = json.loads(content.decode('utf-8'))
+                        print(content, type(content))
+                        
             #na elke dag krijgen we een except
             #en zo resetten we
             except:
