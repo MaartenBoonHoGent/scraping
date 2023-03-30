@@ -26,7 +26,7 @@ def runBrusselsAirlines():
                     'FlightNummers':[],
                     'Vliegtuigen':[] })
 
-  df.to_csv('scraping/brusselsAirlines.csv', index=False)
+  df.to_csv('brusselsAirlines.csv', index=False)
 
 
 
@@ -223,7 +223,7 @@ def runBrusselsAirlines():
                     'FlightNummers':[flights],
                     'Vliegtuigen':[planes] })
 
-                  df2.to_csv('scraping/brusselsAirlines.csv', index=False,mode='a',header=False)
+                  df2.to_csv('brusselsAirlines.csv', index=False,mode='a',header=False)
             except:
               print("geen vluchten")
         selecteerStartMaand += 1

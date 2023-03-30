@@ -1,6 +1,1 @@
 datum_extract,datum_vlucht,start,stop,Vertrek uur,Aankomst uur,duur,aantalStops,prijs,stoelen,tussenstop Viegvelden,FlightNummers,Vliegtuigen
-2023-03-29,2023-10-31,Brussel,Faro,11:50,15:45,4h 55m,1,"395,25",6,"{'(BRU)', '(FAO)', '(LIS)'}","{'6401', '1903', '2023'}",{'A319'}
-2023-03-29,2023-10-31,Brussel,Faro,06:00,10:30,5h 30m,1,"395,25",6,"{'(BRU)', '(FAO)', '(LIS)'}","{'6403', '1901', '2023'}","{'A320', 'A319'}"
-2023-03-29,2023-10-31,Brussel,Faro,10:15,15:45,6h 30m,1,"395,25",-1,"{'(BRU)', '(FAO)', '(LIS)'}","{'3815', '1903', '2023'}",{'A319'}
-2023-03-29,2023-10-31,Brussel,Faro,17:55,23:50,6h 55m,1,"395,25",6,"{'(BRU)', '(FAO)', '(LIS)'}","{'6413', '1905', '2023'}","{'A320NEO', 'A319'}"
-2023-03-29,2023-10-31,Brussel,Faro,11:50,23:50,13h 00m,1,"395,25",6,"{'(BRU)', '(FAO)', '(LIS)'}","{'1905', '6401', '2023'}","{'A320NEO', 'A319'}"
