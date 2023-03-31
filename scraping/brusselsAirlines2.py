@@ -16,64 +16,74 @@ import io
 import urllib.request
 import json
 import pandas as pd
+import os
+import traceback
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+
+
 def createDriver():
     driver_service = Service(executable_path=PATH)
     driver = webdriver.Chrome(service=driver_service)
-    
-    stealth(driver,
-        languages=["en-US", "en"],
-        vendor="Google Inc.",
-        platform="Win32",
-        webgl_vendor="Intel Inc.",
-        renderer="Intel Iris OpenGL Engine",
-        fix_hairline=True,
-    )
 
+    stealth(driver,
+            languages=["en-US", "en"],
+            vendor="Google Inc.",
+            platform="Win32",
+            webgl_vendor="Intel Inc.",
+            renderer="Intel Iris OpenGL Engine",
+            fix_hairline=True,
+            )
 
     return driver
 
-LANDEN = ["palermo-sicilie", "faro", "alicante", "malaga", "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
-MAANDEN = ["", "", "", "APRIL", "MEI", "JUNI", "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER"]
-TEST= ["palermo-sicilie"]
+
+LANDEN = ["palermo-sicilie", "faro", "alicante", "malaga",
+          "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
+MAANDEN = ["", "", "", "APRIL", "MEI", "JUNI",
+           "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER"]
+TEST = ["palermo-sicilie"]
+
 
 def object_to_dataframe(json_data):
     lijst = []
-    date_data_recieved = datetime.now().date()
+    date_data_recieved = datetime.datetime.now().date()
     for data in json_data['data']['airBoundGroups']:
+        counter = 0
         arrivalAirportCode = data['boundDetails']['originLocationCode']
         departAirportCode = data['boundDetails']['destinationLocationCode']
         journeyDuration = data['boundDetails']['duration']
         totalNumberOfStops = len(data['boundDetails']['segments']) - 1
-        if data['boundDetails'].contains('segments'):
+
+        # availableSeats = data['airBounds'][1]['availabilityDetails']['quota']
+        # basePrice = data['airBounds'][1]['prices']['totalPrices']['base']
+        # totalPrice = data['airBounds'][1]['prices']['totalPrices']['total']
+        # tax = data['airBounds'][1]['prices']['totalPrices']['totalTaxes']
+
+        if 'segments' in data['boundDetails']:
             for segment in data['boundDetails']['segments']:
                 flightId = segment['flightId']
-                if segment.contains('connectionTime'):
+                if 'connectionTime' in segment:
                     connectionTime = segment['connectionTime']
-                for flight in json_data['dictionaries']['flight']['flightId']:
-                    depTime=flight['departure']['dateTime']
-                    arrivalTime=flight['arrival']['dateTime']
+                for flight in json_data['dictionaries']['flight']:
+                    if flight != flightId:
+                        counter += 1
         else:
-            flightId = segment['flightId']
-            for flight in json_data['dictionaries']['flight']['flightId']:
-                    depTime=flight['departure']['dateTime']
-                    arrivalTime=flight['arrival']['dateTime']
+            flightId = data['boundDetails']['flightId']
+            for flight in json_data['dictionaries']['flight']:
+                if flight != flightId:
+                    counter += 1
 
-        for bounds in data['airBounds'][1]:
-            availableSeats = bounds['availabilityDetails']['quota']
-            basePrice = bounds['prices']['totalPrices']['base']
-            totalPrice = bounds['prices']['totalPrices']['total']
-            tax = bounds['prices']['totalPrices']['totalTaxes']
-    
+        # depTime = json_data['dictionaries']['flight'][counter]['departure']['dateTime']
+        # arrivalTime = json_data['dictionaries']['flight'][counter]['arrival']['dateTime']
 
-            lijst.append({ 'date_data_recieved': date_data_recieved, 'depTime': depTime, 'arrivalTime': arrivalTime, 
-                          'arrivalAirportCode': arrivalAirportCode, 'departAirportCode': departAirportCode, 'journeyDuration': journeyDuration, 
-                          'totalNumberOfStops': totalNumberOfStops, 'connectionTime':connectionTime,'flightId': flightId, 'availableSeats': availableSeats, 
-                          'basePrice': basePrice, 'totalPrice': totalPrice, 'tax': tax
+        lijst.append({'date_data_recieved': date_data_recieved,
+                      'arrivalAirportCode': arrivalAirportCode, 'departAirportCode': departAirportCode, 'journeyDuration': journeyDuration,
+                      'totalNumberOfStops': totalNumberOfStops, 'connectionTime': connectionTime, 'flightId': flightId,
 
-            })
+                      })
     return pd.DataFrame(lijst)
+
 
 def getData():
     # Create the driver
@@ -83,8 +93,8 @@ def getData():
     for bestemming in TEST:
         # in geval van fouten opnieuw beginnen
         opnieuw = True
-        #dit is om te zeggen welke datum je moet starten om te kiezen
-        if(date.today().month  < 4):
+        # dit is om te zeggen welke datum je moet starten om te kiezen
+        if (date.today().month < 4):
             selecteerStartDag = 1
             selecteerStartMaand = 3
         else:
@@ -93,58 +103,67 @@ def getData():
 
         url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
         print(f"Bestemming {bestemming} | {str(datetime.datetime.now())}")
-        while(opnieuw or (selecteerStartMaand !=4  and selecteerStartDag != 2)):
+        while (opnieuw or (selecteerStartMaand != 4 and selecteerStartDag != 2)):
             driver.get(url)
             try:
                 opnieuw = False
-                WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
+                WebDriverWait(driver, 120).until(EC.presence_of_element_located(
+                    (By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
 
-                #enkelle reizen aanklikken 
-                label_click = driver.find_element(By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
+                # enkelle reizen aanklikken
+                label_click = driver.find_element(
+                    By.CSS_SELECTOR, "label.checkbox-like.lh.lh-checkmark-checked")
                 driver.execute_script("arguments[0].click()", label_click)
 
-                #openen van info
-                openen = driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")
+                # openen van info
+                openen = driver.find_element(
+                    By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")
                 driver.execute_script("arguments[0].click()", openen)
 
-                WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]")))
+                WebDriverWait(driver, 120).until(EC.presence_of_element_located(
+                    (By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]")))
 
-                #datum zetten
-                open_dagen = driver.find_element(By.XPATH, "//*[@id='flightsTab']/div[4]/div[1]/div[1]/label")
+                # datum zetten
+                open_dagen = driver.find_element(
+                    By.XPATH, "//*[@id='flightsTab']/div[4]/div[1]/div[1]/label")
                 driver.execute_script("arguments[0].click()", open_dagen)
-                #maand selecteren
-                while(driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]").text != '%s 2023' % MAANDEN[selecteerStartMaand]):
-                    volgende = driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[2]")
+                # maand selecteren
+                while (driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[3]/span[1]").text != '%s 2023' % MAANDEN[selecteerStartMaand]):
+                    volgende = driver.find_element(
+                        By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[2]")
                     driver.execute_script("arguments[0].click()", volgende)
-                #dag selecteren
-                tabel = driver.find_element(By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[4]/table[1]")
+                # dag selecteren
+                tabel = driver.find_element(
+                    By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[4]/table[1]")
                 dagen = tabel.find_elements(By.CSS_SELECTOR, "tr.date-row td")
 
-                #beginnen van loop
+                # beginnen van loop
                 for d in dagen:
                     retrievedData = []
-                    if(d.text == str(selecteerStartDag)):
+                    if (d.text == str(selecteerStartDag)):
                         selecteerStartDag += 1
-                    
-                        #dag aanklikken
-                        driver.execute_script("arguments[0].click()", d)
-                        
-                        #klikken voor naar juiste pagina te gaan
-                        r = driver.find_element(By.CSS_SELECTOR, "button#searchFlights") # Findbutton by CSS selector
-                        driver.execute_script("arguments[0].click()", r)
-                        
-                        # wachten tot tijd geladen is
-                        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
 
+                        # dag aanklikken
+                        driver.execute_script("arguments[0].click()", d)
+
+                        # klikken voor naar juiste pagina te gaan
+                        # Findbutton by CSS selector
+                        r = driver.find_element(
+                            By.CSS_SELECTOR, "button#searchFlights")
+                        driver.execute_script("arguments[0].click()", r)
+
+                        # wachten tot tijd geladen is
+                        WebDriverWait(driver, 30).until(EC.presence_of_element_located(
+                            (By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
 
                         # Getting the object
                         responseBody = None
-                        print("dag:",str(selecteerStartDag) , " maand:" , str(selecteerStartMaand), "dest:" , bestemming)
-                              
+
                         for request in driver.requests:
                             if request.response:
                                 if 'air-bounds' in request.url.lower():
-                                    responseBody = io.BytesIO(request.response.body)
+                                    responseBody = io.BytesIO(
+                                        request.response.body)
                                     break
 
                         # Decompress the gzipped content
@@ -152,22 +171,27 @@ def getData():
                             content = f.read()
 
                         content = json.loads(content.decode('utf-8'))
-                        retrievedData.append(object_to_dataframe(content))
-            except:
-                opnieuw = True
-                driver.get(url) 
+                        content = object_to_dataframe(content)
+                        print(content)
+                        content.to_csv("BruAir.csv", mode=('a' if os.path.exists(
+                            "BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
+
+            except Exception as e:
+                print(traceback.format_exc())
+                exit(0)
+
     retrievedData = pd.concat(content)
     return retrievedData
-                        
-            #na elke dag krijgen we een except
-            #en zo resetten we
-            
+
+    # na elke dag krijgen we een except
+    # en zo resetten we
+
 
 def main():
     retrievedData = getData()
     result_Data = retrievedData.drop_duplicates()
     result_Data.to_csv("BruAir.csv", index=False)
 
+
 if __name__ == "__main__":
     main()
-    
