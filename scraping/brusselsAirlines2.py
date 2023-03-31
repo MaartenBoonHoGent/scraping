@@ -49,37 +49,36 @@ def object_to_dataframe(json_data):
     lijst = []
     date_data_recieved = datetime.datetime.now().date()
     for data in json_data['data']['airBoundGroups']:
+        flightId = []
+        depDate = []
+        arrivalDate = []
         counter = 0
         arrivalAirportCode = data['boundDetails']['originLocationCode']
         departAirportCode = data['boundDetails']['destinationLocationCode']
         journeyDuration = data['boundDetails']['duration']
         totalNumberOfStops = len(data['boundDetails']['segments']) - 1
 
-        # availableSeats = data['airBounds'][1]['availabilityDetails']['quota']
-        # basePrice = data['airBounds'][1]['prices']['totalPrices']['base']
-        # totalPrice = data['airBounds'][1]['prices']['totalPrices']['total']
-        # tax = data['airBounds'][1]['prices']['totalPrices']['totalTaxes']
+        for airbounds in data['airBounds']:
+            if counter == 1:
+                for details in airbounds['availabilityDetails']:
+                    flightId.append(details['flightId'])
+                    availableSeats = details['quota']
+                basePrice = airbounds['prices']['unitPrices'][0]['prices'][0]['base']
+                totalPrice = airbounds['prices']['unitPrices'][0]['prices'][0]['total']
+                tax = airbounds['prices']['unitPrices'][0]['prices'][0]['totalTaxes']
+            counter += 1
 
         if 'segments' in data['boundDetails']:
             for segment in data['boundDetails']['segments']:
-                flightId = segment['flightId']
                 if 'connectionTime' in segment:
                     connectionTime = segment['connectionTime']
-                for flight in json_data['dictionaries']['flight']:
-                    if flight != flightId:
-                        counter += 1
         else:
             flightId = data['boundDetails']['flightId']
-            for flight in json_data['dictionaries']['flight']:
-                if flight != flightId:
-                    counter += 1
-
-        # depTime = json_data['dictionaries']['flight'][counter]['departure']['dateTime']
-        # arrivalTime = json_data['dictionaries']['flight'][counter]['arrival']['dateTime']
 
         lijst.append({'date_data_recieved': date_data_recieved,
                       'arrivalAirportCode': arrivalAirportCode, 'departAirportCode': departAirportCode, 'journeyDuration': journeyDuration,
-                      'totalNumberOfStops': totalNumberOfStops, 'connectionTime': connectionTime, 'flightId': flightId,
+                      'totalNumberOfStops': totalNumberOfStops, 'connectionTime': connectionTime, 'availableSeats': availableSeats,
+                      'basePrice': basePrice, 'totalPrice': totalPrice, 'tax': tax, 'flightId': flightId,
 
                       })
     return pd.DataFrame(lijst)
