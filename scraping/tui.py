@@ -11,6 +11,7 @@ import re
 import pandas as pd
 # from webdriver_manager.chrome import ChromeDriverManager
 import json
+from databaseConnection import DataBaseConnection
 
 
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
@@ -81,11 +82,15 @@ def getFlightData():
     dateOut = date(2023, 10, 1)
     retrieveData = []
     addDays = timedelta(days=7)
+    amountOfDataToRetrieve = len(DESTINATION) * len(ORIGINS) * (int((dateOut - dateIn).days / 7) + 1)
+    fullCounter = 0
     while dateIn <= dateOut:
         dateIn += addDays
         counter = 0
         for destination in DESTINATION:
+            print(f"Retrieving data for {destination} on {dateIn.strftime('%Y-%m-%d')} ({counter}/{len(DESTINATION)}) ({fullCounter}/{amountOfDataToRetrieve})")
             counter += 1
+            fullCounter += 1
             url = "http://www.tuifly.be/flight/nl/"
             URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
                             flyingFrom='BRU',
@@ -103,7 +108,7 @@ def getFlightData():
             data = driver.execute_script(
                 "return JSON.stringify(searchResultsJson)")
             driver.close()
-
+            
             json_object = json.loads(data)
             retrieveData.append(object_to_dataframe(json_object))
     retrieveData = pd.concat(retrieveData)
@@ -113,7 +118,45 @@ def getFlightData():
 def main():
     retrieveData = getFlightData()
     result_Data = retrieveData.drop_duplicates()
-    result_Data.to_csv("./data/tuifly.csv", index=False)
+
+    if result_Data.empty:
+        return
+
+    # Rename the columns
+
+    result_Data = result_Data.rename(
+        columns={
+            "carrierName": "maatschappij_naam",
+            "departAirportCode": "vertrek_airport_code",
+            "departAirportName": "vertrek_luchthaven_naam",
+            "arrivalAirportCode": "aankomst_airport_code",
+            "arrivalAirportName": "aankomst_luchthaven_naam",
+            "totalPrice": "prijs",
+            "availableSeats": "vrije_plaatsen",
+            "productId": "flightkey",
+            "flightNumber": "vluchtnummer",
+            "arrivalTime": "aankomst_tijdstip",
+            "depTime": "vertrek_tijdstip",
+            "totalNumberOfStops": "aantal_stops",
+        }
+    )
+    
+    result_Data["opgehaald_tijdstip"] = datetime.now()
+
+    # Zip the flightkey 
+    
+    result_Data["flightkey"] = result_Data["flightkey"].str[0:8] + "-" + result_Data["flightkey"].str[8:16] + "-" + result_Data["flightkey"].str[16:24] + "-" + result_Data["flightkey"].str[24:32]
+    # Remove all the columns that are not needed
+    result_Data = result_Data[["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
+         "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
+         "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
+         "vertrek_tijdstip", "aantal_stops"]]
+
+    # Open a connection to the database
+    database = DataBaseConnection()
+    database.connect()
+    database.writeDataFrame(result_Data)
+    database.disconnect()
 
 if __name__ == "__main__":
     main()

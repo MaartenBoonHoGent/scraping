@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import pandas as pd
-
+from databaseConnection import DataBaseConnection
 
 def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0, disc=0, promoCode="", includeConnectingFlights="false", flexDaysBeforeOut=2, flexDaysOut=2, flexDaysBeforeIn=2, flexDaysIn=2, roundTrip="true", toUs="AGREED"):
     baseUrl = "https://www.ryanair.com/api/booking/v4/nl-nl/availability?"
@@ -125,9 +125,7 @@ def getDataRyanair():
         for origin in ORIGINS:
             for destination in DESTINATIONS:
                 counter += 1
-                # print(f"Request {counter}/{amnt}", end="\r")
-                print(
-                    f'Request {counter:2}/{amnt} {origin:3} - {destination:5} | {dateOut}', end='\r')
+                print(f'Request {counter:2}/{amnt} {origin:3} - {destination:5} | {dateOut}', end='\r')
                 URL = createUrl(dateIn="", dateOut=dateOut,
                                 destination=destination, origin=origin)
                 page = requests.get(URL)
@@ -143,7 +141,36 @@ def getDataRyanair():
 def main():
     retrievedData = getDataRyanair()
     result_Data = retrievedData.drop_duplicates()
-    result_Data.to_csv("./data/ryanair.csv", index=False)
+
+    if result_Data.empty:
+        return
+    # Get the data to be the right dataframe
+    result_Data["maatschappij_naam"] = "Ryanair"
+    result_Data["vertrek_airport_code"] = result_Data["departAirportCode"]
+    result_Data["vertrek_luchthaven_naam"] = result_Data["departAirportName"]
+    result_Data["aankomst_airport_code"] = result_Data["arrivalAirportCode"]
+    result_Data["aankomst_luchthaven_naam"] = result_Data["arrivalAirportName"]
+    result_Data["opgehaald_tijdstip"] = datetime.now()
+    result_Data["prijs"] = result_Data["totalPrice"]
+    result_Data["vrije_plaatsen"] = result_Data["availableSeats"]
+    result_Data["flightkey"] = result_Data["flightKey"]
+    result_Data["vluchtnummer"] = result_Data["flightNumber"]
+    result_Data["aankomst_tijdstip"] = result_Data["arrivalDate"]
+    result_Data["vertrek_tijdstip"] = result_Data["departDate"]
+    result_Data["aantal_stops"] = result_Data["totalNumberOfStops"]
+
+    # Remove all the columns that are not needed
+    result_Data = result_Data[
+        ["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
+         "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
+         "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
+         "vertrek_tijdstip", "aantal_stops"]
+    ]
+    # Open a connection to the database
+    database = DataBaseConnection()
+    database.connect()
+    database.writeDataFrame(result_Data)
+    database.disconnect()
 
 
 if __name__ == "__main__":

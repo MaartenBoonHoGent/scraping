@@ -5,21 +5,24 @@ import os
 import pandas as pd
 import json
 from typing import List
+from databaseConnection import DataBaseConnection
+
 
 APIKEY = '17c5625ff4424000b95a0ae6f3a23586'
 FILE = './data/transaviaApi.csv'
 
 headers = {'apikey': APIKEY}
+
 renames = {
-    'outboundFlight.id': 'outboundFlightId',
-    'outboundFlight.departureDateTime': 'DepartureDateTime',
-    'outboundFlight.arrivalDateTime': 'ArrivalDateTime',
+    'outboundFlight.id': 'flightkey',
+    'outboundFlight.departureDateTime': 'vertrek_tijdstip',
+    'outboundFlight.arrivalDateTime': 'aankomst_tijdstip',
     'outboundFlight.marketingAirline.companyShortName': 'Airline',
-    'outboundFlight.flightNumber': 'FlightNumber',
-    'outboundFlight.departureAirport.locationCode': 'DepartureAirport',
-    'outboundFlight.arrivalAirport.locationCode': 'ArrivalAirport',
-    'pricingInfoSum.totalPriceAllPassengers': 'TotalPriceAllPassengers',
-    'pricingInfoSum.totalPriceOnePassenger': 'TotalPriceOnePassenger',
+    'outboundFlight.flightNumber': 'vluchtnummer',
+    'outboundFlight.departureAirport.locationCode': 'vertrek_airport_code',
+    'outboundFlight.arrivalAirport.locationCode': 'aankomst_airport_code',
+    'pricingInfoSum.totalPriceAllPassengers': 'totalPriceAllPassengers',
+    'pricingInfoSum.totalPriceOnePassenger': 'prijs',
     'pricingInfoSum.baseFare': 'BaseFare',
     'pricingInfoSum.taxSurcharge': 'TaxSurcharge',
     'pricingInfoSum.currencyCode': 'CurrencyCode',
@@ -83,7 +86,7 @@ def run():
     ]
     ORIGINS = [['BRU', "Brussel"]]
     # Create the dates
-    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
+    dates = pd.date_range("2023-04-01", "2023-05-01", freq="D")
     # Convert to a list of datetime objects
     dates = dates.to_pydatetime().tolist()
     # Select with an interval of 30 days
@@ -95,6 +98,7 @@ def run():
 
     amount = len(ORIGINS) * len(DESTINATIONS) * (len(dates) - 1)
     counter = 1
+    dataframes = []
     for originCode, originName in ORIGINS:
         for destinationCode, destinationName in DESTINATIONS:
             prevDate = dates[0]
@@ -104,10 +108,34 @@ def run():
                 data = request(params(originCode, destinationCode, [prevDate, date]), headers)
                 # Convert the data to a dataframe
                 data = convertToDataFrame(data)
-                # Add the data to the csv file
                 if data is not None:
-                    data.to_csv(FILE, mode='a', header=not os.path.exists(FILE), index=False)
-                prevDate = date
+                    dataframes.append(data)
+
+    # Concatenate the dataframes
+    df = pd.concat(dataframes)
+
+
+    # Voeg de culomns toe
+    """
+        "maatschappij_naam": str,
+    "vertrek_luchthaven_naam": str,
+    "aankomst_luchthaven_naam": str,
+    "opgehaald_tijdstip": datetime64,
+    "aantal_stops": int,
+    """
+    
+    df['maatschappij_naam'] = "transavia"
+    df['vertrek_luchthaven_naam'] = None
+    df['aankomst_luchthaven_naam'] = None
+    df['opgehaald_tijdstip'] = datetime.datetime.now()
+    df['aantal_stops'] = 0
+    df['vrije_plaatsen'] = -1
+
+    # Open a connection to the database
+    database = DataBaseConnection()
+    database.connect()
+    database.writeDataFrame(df)
+    database.disconnect()
 
 if __name__ == '__main__':
     run()

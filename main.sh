@@ -3,7 +3,7 @@
 
 cd scraping
 python ryanair.py
-python transavia.py
+python transaviaApi.py
 python tui.py
 
 if [ "$1" == "BRU" ]; then

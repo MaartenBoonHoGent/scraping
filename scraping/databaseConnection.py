@@ -10,7 +10,7 @@ import json
 class DataBaseConnection:
     def __init__(self) -> None:
 
-        inlogData = json.load(open("database/mysql_inlog.json"))
+        inlogData = json.load(open("../database/mysql_inlog.json"))
 
         self._connection = None
         self._username = inlogData["username"]
@@ -139,6 +139,8 @@ class DataBaseConnection:
             "aantal_stops": int,
         }
 
+    
+
         for column in requiredColumns:
             # Check if the column is present
             assert column in dataframe.columns, "Column " + column + " is not present in the dataframe"
@@ -150,6 +152,12 @@ class DataBaseConnection:
                 # If the conversion fails, raise an error
                 assert dataframe[column].dtype == requiredColumns[column], f"Column {column} is not of the correct type. Expected {requiredColumns[column]}, got {dataframe[column].dtype}"
         
+        dataframe = dataframe[
+            ["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
+            "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
+            "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
+            "vertrek_tijdstip", "aantal_stops"]
+        ]
         # Insert the dataframe into the database using stored procedure 'insert_record'
         cursor = self._connection.cursor()
         for index, row in dataframe.iterrows():

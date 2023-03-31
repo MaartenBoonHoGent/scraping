@@ -28,18 +28,8 @@ CREATE TABLE `luchthaven` (
   `naam` varchar(60) NOT NULL,
   PRIMARY KEY (`luchthaven_id`),
   UNIQUE KEY `luchthaven_id_UNIQUE` (`luchthaven_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `luchthaven`
---
-
-LOCK TABLES `luchthaven` WRITE;
-/*!40000 ALTER TABLE `luchthaven` DISABLE KEYS */;
-INSERT INTO `luchthaven` VALUES (3,'AMS','Amsterdam'),(4,'LHR','Londen Heathrow');
-/*!40000 ALTER TABLE `luchthaven` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `maatschappij`
@@ -53,18 +43,8 @@ CREATE TABLE `maatschappij` (
   `naam` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`maatschappij_id`),
   UNIQUE KEY `maatschappij_id_UNIQUE` (`maatschappij_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `maatschappij`
---
-
-LOCK TABLES `maatschappij` WRITE;
-/*!40000 ALTER TABLE `maatschappij` DISABLE KEYS */;
-INSERT INTO `maatschappij` VALUES (2,'KLM');
-/*!40000 ALTER TABLE `maatschappij` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `tijdgebaseerde_data`
@@ -83,15 +63,6 @@ CREATE TABLE `tijdgebaseerde_data` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tijdgebaseerde_data`
---
-
-LOCK TABLES `tijdgebaseerde_data` WRITE;
-/*!40000 ALTER TABLE `tijdgebaseerde_data` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tijdgebaseerde_data` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `vlucht`
 --
 
@@ -100,7 +71,7 @@ DROP TABLE IF EXISTS `vlucht`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vlucht` (
   `vlucht_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `flightkey` varchar(255) DEFAULT NULL,
+  `flightkey` varchar(768) DEFAULT NULL,
   `vluchtnummer` varchar(40) DEFAULT NULL,
   `vertrek_tijdstip` timestamp NOT NULL,
   `aankomst_tijdstip` timestamp NOT NULL,
@@ -117,17 +88,8 @@ CREATE TABLE `vlucht` (
   CONSTRAINT `aankomst_luchthaven` FOREIGN KEY (`aankomst_luchthaven`) REFERENCES `luchthaven` (`luchthaven_id`),
   CONSTRAINT `maatschappij` FOREIGN KEY (`maatschappij_id`) REFERENCES `maatschappij` (`maatschappij_id`),
   CONSTRAINT `vertrek_luchthaven` FOREIGN KEY (`vertrek_luchthaven`) REFERENCES `luchthaven` (`luchthaven_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=212 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `vlucht`
---
-
-LOCK TABLES `vlucht` WRITE;
-/*!40000 ALTER TABLE `vlucht` DISABLE KEYS */;
-/*!40000 ALTER TABLE `vlucht` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Dumping routines for database 'dep_database'
@@ -207,7 +169,7 @@ BEGIN
     SELECT vlucht_id INTO @flight_id FROM vlucht WHERE vlucht.flightkey = flightkey LIMIT 1;
 
     
-    INSERT INTO tijdgebaseerde_data 
+    INSERT IGNORE tijdgebaseerde_data 
         (vlucht_id,
         opgehaald_tijdstip,
         prijs,
@@ -233,4 +195,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-26 13:29:20
+-- Dump completed on 2023-03-31 12:11:22
