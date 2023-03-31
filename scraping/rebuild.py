@@ -5,6 +5,7 @@ if __name__ == "__main__":
     db = DataBaseConnection()
     db.delete()
     db.connect()
+    print(f"Building the database...")
     db.build()
     db.disconnect()
     print ("Done.")

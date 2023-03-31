@@ -86,7 +86,7 @@ def run():
     ]
     ORIGINS = [['BRU', "Brussel"]]
     # Create the dates
-    dates = pd.date_range("2023-04-01", "2023-05-01", freq="D")
+    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
     # Convert to a list of datetime objects
     dates = dates.to_pydatetime().tolist()
     # Select with an interval of 30 days
