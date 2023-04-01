@@ -75,10 +75,15 @@ def object_to_dataframe(json_data):
         else:
             flightId = data['boundDetails']['flightId']
 
+        temp =  flightId[0].split('-')
+        depDate = f'%s-%s-%s' % (temp[3], temp[4], temp[5])
+        temp =  flightId[len(flightId) - 1].split('-')
+        arrivalDate = f'%s-%s-%s' % (temp[3], temp[4], temp[5])
+
         lijst.append({'date_data_recieved': date_data_recieved,
                       'arrivalAirportCode': arrivalAirportCode, 'departAirportCode': departAirportCode, 'journeyDuration': journeyDuration,
                       'totalNumberOfStops': totalNumberOfStops, 'connectionTime': connectionTime, 'availableSeats': availableSeats,
-                      'basePrice': basePrice, 'totalPrice': totalPrice, 'tax': tax, 'flightId': flightId,
+                      'basePrice': basePrice, 'totalPrice': totalPrice, 'tax': tax, 'flightId': flightId, 'depDate': depDate, 'arrivalDate': arrivalDate,
 
                       })
     return pd.DataFrame(lijst)
@@ -90,22 +95,19 @@ def getData():
     print(f"Driver created | {str(datetime.datetime.now())}")
     # Go to the website
     for bestemming in TEST:
-        # in geval van fouten opnieuw beginnen
-        opnieuw = True
         # dit is om te zeggen welke datum je moet starten om te kiezen
         if (date.today().month < 4):
             selecteerStartDag = 1
             selecteerStartMaand = 3
         else:
-            selecteerStartDag = date.today().day
+            selecteerStartDag = date.today().day + 1
             selecteerStartMaand = date.today().month - 1
 
         url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
         print(f"Bestemming {bestemming} | {str(datetime.datetime.now())}")
-        while (opnieuw or (selecteerStartMaand != 4 and selecteerStartDag != 2)):
+        while ((selecteerStartMaand != 4 and selecteerStartDag != 5)):
             driver.get(url)
             try:
-                opnieuw = False
                 WebDriverWait(driver, 120).until(EC.presence_of_element_located(
                     (By.XPATH, "//*[@id='flightSearch']/div[1]/div/ul/li[1]/label")))
 
@@ -144,52 +146,59 @@ def getData():
 
                         # dag aanklikken
                         driver.execute_script("arguments[0].click()", d)
+                        break
 
-                        # klikken voor naar juiste pagina te gaan
-                        # Findbutton by CSS selector
-                        r = driver.find_element(
-                            By.CSS_SELECTOR, "button#searchFlights")
-                        driver.execute_script("arguments[0].click()", r)
+                # klikken voor naar juiste pagina te gaan
+                # Findbutton by CSS selector
+                r = driver.find_element(
+                    By.CSS_SELECTOR, "button#searchFlights")
+                driver.execute_script("arguments[0].click()", r)
 
-                        # wachten tot tijd geladen is
-                        WebDriverWait(driver, 30).until(EC.presence_of_element_located(
-                            (By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
+                # wachten tot tijd geladen is
+                try:
+                    data = True
+                    WebDriverWait(driver, 30).until(EC.presence_of_element_located(
+                        (By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
+                except:
+                    data = False
+                
+                if(data):
+                    # Getting the object
+                    responseBody = None
+                    
+                    for request in driver.requests:
+                        if request.response:
+                            if 'air-bounds' in request.url.lower():
+                                responseBody = io.BytesIO(
+                                    request.response.body)
+                                
+                                # Decompress the gzipped content
+                                with gzip.GzipFile(fileobj=responseBody) as f:
+                                    content = f.read()
 
-                        # Getting the object
-                        responseBody = None
-
-                        for request in driver.requests:
-                            if request.response:
-                                if 'air-bounds' in request.url.lower():
-                                    responseBody = io.BytesIO(
-                                        request.response.body)
-                                    break
-
-                        # Decompress the gzipped content
-                        with gzip.GzipFile(fileobj=responseBody) as f:
-                            content = f.read()
-
-                        content = json.loads(content.decode('utf-8'))
-                        content = object_to_dataframe(content)
-                        print(content)
-                        content.to_csv("BruAir.csv", mode=('a' if os.path.exists(
-                            "BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
-
+                                content = json.loads(content.decode('utf-8'))
+                                content = object_to_dataframe(content)
+                                print(content)
+                                content.to_csv("BruAir.csv", mode=('a' if os.path.exists(
+                                    "BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
+                                break
+                    
             except Exception as e:
                 print(traceback.format_exc())
                 exit(0)
 
-    retrievedData = pd.concat(content)
+    try:
+        retrievedData = pd.concat(content)
+    except:
+        retrievedData = None
     return retrievedData
-
-    # na elke dag krijgen we een except
-    # en zo resetten we
 
 
 def main():
     retrievedData = getData()
-    result_Data = retrievedData.drop_duplicates()
-    result_Data.to_csv("BruAir.csv", index=False)
+    if(retrievedData is not None):
+        result_Data = retrievedData.drop_duplicates()
+        result_Data.to_csv("BruAir.csv", index=False)
 
 
 if __name__ == "__main__":
