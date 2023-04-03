@@ -18,7 +18,7 @@ class DataBaseConnection:
         self._password = inlogData["password"]
         self._databaseName = "dep_database"
         self._hostName = "127.0.0.1"
-        self._buildFile = "../database/build.sql"
+        self._buildFile = "database/build.sql"
 
 
 
