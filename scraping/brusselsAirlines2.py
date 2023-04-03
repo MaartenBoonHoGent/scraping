@@ -1,5 +1,5 @@
 from seleniumwire import webdriver
-
+from databaseConnection import DataBaseConnection
 from seleniumwire import webdriver
 from selenium_stealth import stealth
 from selenium.webdriver.chrome.service import Service
@@ -42,8 +42,6 @@ LANDEN = ["palermo-sicilie", "faro", "alicante", "malaga",
           "palma-de-mallorca", "tenerife", "Kerkyra", "brindisi", "ibiza"]
 MAANDEN = ["", "", "", "APRIL", "MEI", "JUNI",
            "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER"]
-TEST = ["palermo-sicilie"]
-
 
 def object_to_dataframe(json_data):
     lijst = []
@@ -94,18 +92,18 @@ def getData():
     driver = createDriver()
     print(f"Driver created | {str(datetime.datetime.now())}")
     # Go to the website
-    for bestemming in TEST:
+    for bestemming in LANDEN:
         # dit is om te zeggen welke datum je moet starten om te kiezen
         if (date.today().month < 4):
             selecteerStartDag = 1
             selecteerStartMaand = 3
         else:
-            selecteerStartDag = date.today().day + 1
+            selecteerStartDag = date.today().day
             selecteerStartMaand = date.today().month - 1
 
         url = f"https://www.brusselsairlines.com/lhg/be/nl/o-d/cy-cy/brussel-{bestemming}"
         print(f"Bestemming {bestemming} | {str(datetime.datetime.now())}")
-        while ((selecteerStartMaand != 4 and selecteerStartDag != 5)):
+        while ((selecteerStartMaand != 10)):
             driver.get(url)
             try:
                 WebDriverWait(driver, 120).until(EC.presence_of_element_located(
@@ -138,7 +136,8 @@ def getData():
                     By.XPATH, "//*[@id='flightSearch']/div[5]/div[3]/div[4]/table[1]")
                 dagen = tabel.find_elements(By.CSS_SELECTOR, "tr.date-row td")
 
-                # beginnen van loop
+                # zoeken naar dag
+                vorigeDag = selecteerStartDag
                 for d in dagen:
                     retrievedData = []
                     if (d.text == str(selecteerStartDag)):
@@ -147,41 +146,45 @@ def getData():
                         # dag aanklikken
                         driver.execute_script("arguments[0].click()", d)
                         break
+                # als de dag niet gevonden is, dan naar volgende maand gaan
+                if selecteerStartDag == vorigeDag:
+                    selecteerStartMaand += 1
+                    selecteerStartDag = 1
+                else:
+                    # klikken voor naar juiste pagina te gaan
+                    # Findbutton by CSS selector
+                    r = driver.find_element(
+                        By.CSS_SELECTOR, "button#searchFlights")
+                    driver.execute_script("arguments[0].click()", r)
 
-                # klikken voor naar juiste pagina te gaan
-                # Findbutton by CSS selector
-                r = driver.find_element(
-                    By.CSS_SELECTOR, "button#searchFlights")
-                driver.execute_script("arguments[0].click()", r)
-
-                # wachten tot tijd geladen is
-                try:
-                    data = True
-                    WebDriverWait(driver, 30).until(EC.presence_of_element_located(
-                        (By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
-                except:
-                    data = False
-                
-                if(data):
-                    # Getting the object
-                    responseBody = None
+                    # wachten tot tijd geladen is
+                    try:
+                        data = True
+                        WebDriverWait(driver, 30).until(EC.presence_of_element_located(
+                            (By.XPATH, "/html/body/app/refx-app-layout/div/div[2]/refx-upsell/refx-basic-in-flow-layout/div/div[7]/div/div/footer/div[1]/lhg-upsell-back-button/button")))
+                    except:
+                        data = False
                     
-                    for request in driver.requests:
-                        if request.response:
-                            if 'air-bounds' in request.url.lower():
-                                responseBody = io.BytesIO(
-                                    request.response.body)
-                                
-                                # Decompress the gzipped content
-                                with gzip.GzipFile(fileobj=responseBody) as f:
-                                    content = f.read()
+                    if(data):
+                        # Getting the object
+                        responseBody = None
+                        
+                        for request in driver.requests:
+                            if request.response:
+                                if 'air-bounds' in request.url.lower():
+                                    responseBody = io.BytesIO(
+                                        request.response.body)
+                                    
+                                    # Decompress the gzipped content
+                                    with gzip.GzipFile(fileobj=responseBody) as f:
+                                        content = f.read()
 
-                                content = json.loads(content.decode('utf-8'))
-                                content = object_to_dataframe(content)
-                                print(content)
-                                content.to_csv("BruAir.csv", mode=('a' if os.path.exists(
-                                    "BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
-                                break
+                                    content = json.loads(content.decode('utf-8'))
+                                    content = object_to_dataframe(content)
+                                    print(content)
+                                    content.to_csv("BruAir.csv", mode=('a' if os.path.exists(
+                                        "BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
+                                    break
                     
             except Exception as e:
                 print(traceback.format_exc())
@@ -199,6 +202,40 @@ def main():
     if(retrievedData is not None):
         result_Data = retrievedData.drop_duplicates()
         result_Data.to_csv("BruAir.csv", index=False)
+    
+    # Get the data to be the right dataframe
+    result_Data["maatschappij_naam"] = "Brussels Airlines"
+    result_Data["vertrek_airport_code"] = result_Data["departAirportCode"]
+    # result_Data["vertrek_luchthaven_naam"] = result_Data["departAirportName"]
+    result_Data["aankomst_airport_code"] = result_Data["arrivalAirportCode"]
+    # result_Data["aankomst_luchthaven_naam"] = result_Data["arrivalAirportName"]
+    result_Data["opgehaald_tijdstip"] = datetime.now()
+    result_Data["prijs"] = result_Data["totalPrice"]
+    result_Data["vrije_plaatsen"] = result_Data["availableSeats"]
+    # result_Data["flightkey"] = result_Data["flightKey"]
+    result_Data["vluchtnummer"] = result_Data["flightId"]
+    result_Data["aankomst_tijdstip"] = result_Data["arrivalDate"]
+    result_Data["vertrek_tijdstip"] = result_Data["depDate"]
+    result_Data["aantal_stops"] = result_Data["totalNumberOfStops"]
+
+    # Remove all the columns that are not needed
+    # result_Data = result_Data[
+    #     ["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
+    #      "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
+    #      "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
+    #      "vertrek_tijdstip", "aantal_stops"]
+    # ]
+    result_Data = result_Data[
+    ["maatschappij_naam", "vertrek_airport_code",
+        "aankomst_airport_code", "opgehaald_tijdstip",
+        "prijs", "vrije_plaatsen", "vluchtnummer", "aankomst_tijdstip",
+        "vertrek_tijdstip", "aantal_stops"]
+    ]
+    # Open a connection to the database
+    database = DataBaseConnection()
+    database.connect()
+    database.writeDataFrame(result_Data)
+    database.disconnect()
 
 
 if __name__ == "__main__":
