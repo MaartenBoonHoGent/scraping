@@ -114,9 +114,9 @@ def getDataRyanair():
     retrievedData = []
     mindate = datetime.strptime("2023-04-01", "%Y-%m-%d")
     if datetime.now().date() <= mindate.date():
-        dates = pd.date_range("2023-04-01", "2023-04-02", freq="D")
+        dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
     else:
-        dates = pd.date_range(datetime.now().date(), "2023-04-05", freq="D")
+        dates = pd.date_range(datetime.now().date(), "2023-10-01", freq="D")
     # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
     dates = dates.strftime("%Y-%m-%d").tolist()
     amnt = len(DESTINATIONS) * len(ORIGINS) * len(dates)

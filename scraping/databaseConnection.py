@@ -11,7 +11,6 @@ class DataBaseConnection:
     def __init__(self) -> None:
 
         # Print current working directory
-        print("Current working directory: " + os.getcwd())
         inlogData = json.load(open("database/mysql_inlog.json"))
 
         self._connection = None

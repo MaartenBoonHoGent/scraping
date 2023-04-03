@@ -85,12 +85,15 @@ def run():
         ['TFS', 'Tenerife'],
     ]
     ORIGINS = [['BRU', "Brussel"]]
-    # Create the dates
-    dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
-    # Convert to a list of datetime objects
-    dates = dates.to_pydatetime().tolist()
+    mindate = datetime.datetime.strptime("2023-04-01", "%Y-%m-%d")
+    if datetime.datetime.now().date() <= mindate.date():
+        dates = pd.date_range("2023-04-01", "2023-10-01", freq="D")
+    else:
+        dates = pd.date_range(datetime.datetime.now().date(), "2023-10-01", freq="D")
+    # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
+    dates.to_pydatetime().tolist()    
     # Select with an interval of 30 days
-    dates = dates[::30]
+    dates = dates[::29]
 
     # Remove the csv file if it exists
     if os.path.exists(FILE):
@@ -103,13 +106,15 @@ def run():
         for destinationCode, destinationName in DESTINATIONS:
             prevDate = dates[0]
             for date in dates[1:]:
-                print(f'Request {counter:2}/{amount} {originName:10} - {destinationName:20} | {prevDate.strftime("%Y-%m-%d")} - {date.strftime("%Y-%m-%d")}', end='\r')
+                print(f'Request {counter:2}/{amount} {originName:10} - {destinationName:20} | {prevDate.strftime("%Y-%m-%d")} - {date.strftime("%Y-%m-%d")}')
                 counter += 1
                 data = request(params(originCode, destinationCode, [prevDate, date]), headers)
                 # Convert the data to a dataframe
                 data = convertToDataFrame(data)
                 if data is not None:
                     dataframes.append(data)
+                
+                prevDate = date
 
     # Concatenate the dataframes
     df = pd.concat(dataframes)
