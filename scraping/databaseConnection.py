@@ -10,7 +10,7 @@ import json
 class DataBaseConnection:
     def __init__(self) -> None:
 
-        inlogData = json.load(open("../database/mysql_inlog.json"))
+        inlogData = json.load(open("/database/mysql_inlog.json"))
 
         self._connection = None
         self._username = inlogData["username"]
