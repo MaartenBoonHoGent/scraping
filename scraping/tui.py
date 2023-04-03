@@ -14,7 +14,7 @@ import json
 from databaseConnection import DataBaseConnection
 
 
-PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+PATH = json.load(open("settings.json"))["chromedriver_path"]
 
 # url = "http://www.tuifly.be/flight/nl/search?flyingFrom%5B%5D=OST&flyingTo%5B%5D=HER&depDate=2023-05-05&adults=1&children=0&childAge=&choiceSearch=true&searchType=pricegrid&nearByAirports=true&currency=EUR&isOneWay=true"
 
