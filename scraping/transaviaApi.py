@@ -1,12 +1,17 @@
-import http.client, urllib.request, urllib.parse, urllib.error, base64
 import datetime
-import time
-import os
-import pandas as pd
+import http.client
 import json
+import os
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from typing import List
-from databaseConnection import DataBaseConnection
 
+import pandas as pd
+
+from databaseConnection import DataBaseConnection
+from log.logger import Logger
 
 APIKEY = '17c5625ff4424000b95a0ae6f3a23586'
 FILE = './data/transaviaApi.csv'
@@ -31,6 +36,7 @@ renames = {
     'resultSet': 'ResultSet'
 }
 
+
 def params(origin: str, destination: str, date: List[datetime.datetime]) -> str:
     # Create the dates string
     if len(date) == 1:
@@ -39,13 +45,14 @@ def params(origin: str, destination: str, date: List[datetime.datetime]) -> str:
         startDate = date[0].strftime('%Y%m%d')
         endDate = date[1].strftime('%Y%m%d')
         date = startDate + '-' + endDate
-    return urllib.parse.urlencode({ 'origin': origin, 'destination': destination, 'originDepartureDate': date })
+    return urllib.parse.urlencode({'origin': origin, 'destination': destination, 'originDepartureDate': date})
 
-def request(params: str, headers: dict) -> str:
+
+def request(requestParameters: str, requestHeaders: dict) -> dict:
     for _ in range(10):
-        try: 
+        try:
             conn = http.client.HTTPSConnection('api.transavia.com')
-            conn.request("GET", "/v1/flightoffers/?%s" % params, "{body}", headers)
+            conn.request("GET", "/v1/flightoffers/?%s" % requestParameters, "{body}", requestHeaders)
             response = conn.getresponse()
             data = response.read()
             # Convert the bytes to a dictionary if it's not empty
@@ -57,19 +64,22 @@ def request(params: str, headers: dict) -> str:
             conn.close()
             return data
         except Exception as e:
+            logger = Logger()
+            logger.logError(e)
             time.sleep(10)
+
 
 def convertToDataFrame(data: dict) -> pd.DataFrame:
     if data:
         # Get the data from the dictionary
         df = pd.json_normalize(data, record_path=['flightOffer'], meta=['resultSet'])
-        # ToDo: Normalize the data
         # Rename the columns
         df.rename(columns=renames, inplace=True)
         return df
-    return None
+    return pd.DataFrame()
+
+
 def run():
-    
     DESTINATIONS = [
         ['CFU', 'Corfu'],
         ['HER', 'Heraklion'],
@@ -91,7 +101,7 @@ def run():
     else:
         dates = pd.date_range(datetime.datetime.now().date(), "2023-10-01", freq="D")
     # dates = pd.date_range("2023-04-01", "2023-04-01", freq="D")
-    dates.to_pydatetime().tolist()    
+    dates.to_pydatetime().tolist()
     # Select with an interval of 30 days
     dates = dates[::29]
 
@@ -106,19 +116,20 @@ def run():
         for destinationCode, destinationName in DESTINATIONS:
             prevDate = dates[0]
             for date in dates[1:]:
-                print(f'Request {counter:2}/{amount} {originName:10} - {destinationName:20} | {prevDate.strftime("%Y-%m-%d")} - {date.strftime("%Y-%m-%d")}')
+                print(
+                    f'Request {counter:2}/{amount} {originName:10} - {destinationName:20} | '
+                    f'{prevDate.strftime("%Y-%m-%d")} - {date.strftime("%Y-%m-%d")}')
                 counter += 1
                 data = request(params(originCode, destinationCode, [prevDate, date]), headers)
                 # Convert the data to a dataframe
                 data = convertToDataFrame(data)
                 if data is not None:
                     dataframes.append(data)
-                
+
                 prevDate = date
 
     # Concatenate the dataframes
     df = pd.concat(dataframes)
-
 
     # Voeg de culomns toe
     """
@@ -128,7 +139,7 @@ def run():
     "opgehaald_tijdstip": datetime64,
     "aantal_stops": int,
     """
-    
+
     df['maatschappij_naam'] = "transavia"
     df['vertrek_luchthaven_naam'] = None
     df['aankomst_luchthaven_naam'] = None
@@ -136,11 +147,15 @@ def run():
     df['aantal_stops'] = 0
     df['vrije_plaatsen'] = -1
 
+    logger = Logger()
+    logger.log(airline="Transavia", amountOfRows=len(df.index))
+
     # Open a connection to the database
     database = DataBaseConnection()
     database.connect()
     database.writeDataFrame(df)
     database.disconnect()
+
 
 if __name__ == '__main__':
     run()

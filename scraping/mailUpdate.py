@@ -1,3 +1,7 @@
+from datetime import datetime
+
+from log.mailer.mailer import Mailer
+
 
 def sendMail(mailer: Mailer):
     print("Sending mail...")

@@ -1,15 +1,21 @@
-# https://www.ryanair.com/gb/en
-
 from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 import json
 import pandas as pd
 from databaseConnection import DataBaseConnection
+from log.logger import Logger
 
-def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0, disc=0, promoCode="", includeConnectingFlights="false", flexDaysBeforeOut=2, flexDaysOut=2, flexDaysBeforeIn=2, flexDaysIn=2, roundTrip="true", toUs="AGREED"):
+
+def createUrl(destination, origin, dateOut, dateIn, adt=1, chd=0, inf=0, teen=0, disc=0, promoCode="",
+              includeConnectingFlights="false", flexDaysBeforeOut=2, flexDaysOut=2, flexDaysBeforeIn=2, flexDaysIn=2,
+              roundTrip="true", toUs="AGREED"):
     baseUrl = "https://www.ryanair.com/api/booking/v4/nl-nl/availability?"
-    baseUrl = f"{baseUrl}ADT={adt}&CHD={chd}&DateIn={dateIn}&DateOut={dateOut}&Destination={destination}&Disc={disc}&INF={inf}&Origin={origin}&TEEN={teen}&promoCode={promoCode}&IncludeConnectingFlights={includeConnectingFlights}&FlexDaysBeforeOut={flexDaysBeforeOut}&FlexDaysOut={flexDaysOut}&FlexDaysBeforeIn={flexDaysBeforeIn}&FlexDaysIn={flexDaysIn}&RoundTrip={roundTrip}&ToUs={toUs}"
+    baseUrl = f"{baseUrl}ADT={adt}&CHD={chd}&DateIn={dateIn}&DateOut={dateOut}&Destination={destination}&Disc={disc}" \
+              f"&INF={inf}&Origin={origin}&TEEN={teen}&promoCode={promoCode}" \
+              f"&IncludeConnectingFlights={includeConnectingFlights}&FlexDaysBeforeOut={flexDaysBeforeOut}" \
+              f"&FlexDaysOut={flexDaysOut}&FlexDaysBeforeIn={flexDaysBeforeIn}&FlexDaysIn={flexDaysIn}" \
+              f"&RoundTrip={roundTrip}&ToUs={toUs}"
     return baseUrl
 
 
@@ -46,7 +52,7 @@ def object_to_dataframe(json_data):
                 depTime = flight['time'][0].split("T")[1].split(".")[0]
                 arrivalTime = flight['time'][1].split("T")[1].split(".")[0]
                 segmentAmnt = len(flight['segments'])
-                if not "regularFare" in flight:
+                if "regularFare" not in flight:
                     continue
                 fares = flight["regularFare"]['fares'] if 'fares' in flight["regularFare"] else None
                 # fareKey = flight["regularFare"]['fareKey']
@@ -62,7 +68,7 @@ def object_to_dataframe(json_data):
                     fareDiscountAmount = fare['discountAmount']
                     # fareHasBogof = fare['hasBogof']
 
-                    if dateOut >= "2023-04-01" and dateOut <= "2023-10-01":
+                    if "2023-04-01" <= dateOut <= "2023-10-01":
                         output_data.append({
                             # "termsOfUse": termsOfUse,
                             "dateDataRecieved": serverTimeUTC,
@@ -104,13 +110,23 @@ def object_to_dataframe(json_data):
 
 
 def getDataRyanair():
-    DESTINATIONS = ['CFU', 'HER',
-                    'RHO', 'BDS',
-                    'NAP', 'PMO',
-                    'FAO', 'ALC',
-                    'IBZ', 'AGP',
-                    'PMI', 'TFS']
-    ORIGINS = ['BRU', 'CRL']
+    DESTINATIONS = [
+        ['CFU', 'Corfu'],
+        ['HER', 'Heraklion'],
+        ['RHO', 'Rhodos'],
+        ['BDS', 'Bari'],
+        ['NAP', 'Napels'],
+        ['PMO', 'Palermo'],
+        ['FAO', 'Faro'],
+        ['ALC', 'Alicante'],
+        ['IBZ', 'Ibiza'],
+        ['AGP', 'Malaga'],
+        ['PMI', 'Palma de Mallorca'],
+        ['TFS', 'Tenerife'],
+    ]
+    ORIGINS = [
+        ['BRU', 'Brussel'],
+        ['CRL', 'Charleroi']]
     retrievedData = []
     mindate = datetime.strptime("2023-04-01", "%Y-%m-%d")
     if datetime.now().date() <= mindate.date():
@@ -122,17 +138,22 @@ def getDataRyanair():
     amnt = len(DESTINATIONS) * len(ORIGINS) * len(dates)
     counter = 0
     for dateOut in dates:
-        for origin in ORIGINS:
-            for destination in DESTINATIONS:
+        for originCode, originName in ORIGINS:
+            for destinationCode, destinationName in DESTINATIONS:
                 counter += 1
-                print(f'Request {counter:2}/{amnt} {origin:3} - {destination:5} | {dateOut}', end='\r')
-                URL = createUrl(dateIn="", dateOut=dateOut,
-                                destination=destination, origin=origin)
-                page = requests.get(URL)
-                soup = BeautifulSoup(page.content, "lxml")
-                result = soup.find("p").text
-                json_object = json.loads(result)
-                retrievedData.append(object_to_dataframe(json_object))
+                try:
+                    print(f'Request {counter:2}/{amnt} {originCode:3} - {destinationCode:5} | {dateOut}', end='\r')
+                    URL = createUrl(dateIn="", dateOut=dateOut,
+                                    destination=destinationCode, origin=originCode)
+                    page = requests.get(URL)
+                    soup = BeautifulSoup(page.content, "lxml")
+                    result = soup.find("p").text
+                    json_object = json.loads(result)
+                    retrievedData.append(object_to_dataframe(json_object))
+                except Exception as e:
+                    logger = Logger()
+                    logger.logError(e)
+                    continue
     retrievedData = pd.concat(retrievedData)
     retrievedData = retrievedData.drop_duplicates()
     return retrievedData
@@ -166,6 +187,9 @@ def main():
          "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
          "vertrek_tijdstip", "aantal_stops"]
     ]
+
+    logger = Logger()
+    logger.log(airline="Ryanair", amountOfRows=len(result_Data.index))
     # Open a connection to the database
     database = DataBaseConnection()
     database.connect()
