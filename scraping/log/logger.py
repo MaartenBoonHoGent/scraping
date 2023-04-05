@@ -6,8 +6,8 @@ import pandas as pd
 
 class Logger:
     def __init__(self):
-        self._logFile = "log/log.csv"
-        self._errorLogFile = "log/errorLog.csv"
+        self._logFile = "log.csv"
+        self._errorLogFile = "errorLog.csv"
 
     def log(self, airline: str, amountOfRows: int = None):
         # Create a current timestamp
