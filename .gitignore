@@ -1,2 +1,4 @@
 mysql_inlog.json
 settings.json
+log.csv
+errorLog.csv
