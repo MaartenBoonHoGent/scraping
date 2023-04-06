@@ -88,6 +88,7 @@ def object_to_dataframe(json_data):
 
 
 def getData():
+    dataVoorDatabase = []
     # Create the driver
     driver = createDriver()
     print(f"Driver created | {str(datetime.datetime.now())}")
@@ -184,6 +185,7 @@ def getData():
                                     print(content)
                                     content.to_csv("BruAir.csv", mode=('a' if os.path.exists(
                                         "BruAir.csv") else "w"), header=(not os.path.exists("BruAir.csv")), index=False)
+                                    dataVoorDatabase.append(content)
                                     break
                     
             except Exception as e:
@@ -191,51 +193,46 @@ def getData():
                 exit(0)
 
     try:
-        retrievedData = pd.concat(content)
-    except:
+        retrievedData = pd.concat(dataVoorDatabase)
+    except Exception as e:
         retrievedData = None
+        print(e)
     return retrievedData
 
 
 def main():
     retrievedData = getData()
-    if(retrievedData is not None):
-        result_Data = retrievedData.drop_duplicates()
-        result_Data.to_csv("BruAir.csv", index=False)
     
     # Get the data to be the right dataframe
-    result_Data["maatschappij_naam"] = "Brussels Airlines"
-    result_Data["vertrek_airport_code"] = result_Data["departAirportCode"]
-    # result_Data["vertrek_luchthaven_naam"] = result_Data["departAirportName"]
-    result_Data["aankomst_airport_code"] = result_Data["arrivalAirportCode"]
-    # result_Data["aankomst_luchthaven_naam"] = result_Data["arrivalAirportName"]
-    result_Data["opgehaald_tijdstip"] = datetime.now()
-    result_Data["prijs"] = result_Data["totalPrice"]
-    result_Data["vrije_plaatsen"] = result_Data["availableSeats"]
-    # result_Data["flightkey"] = result_Data["flightKey"]
-    result_Data["vluchtnummer"] = result_Data["flightId"]
-    result_Data["aankomst_tijdstip"] = result_Data["arrivalDate"]
-    result_Data["vertrek_tijdstip"] = result_Data["depDate"]
-    result_Data["aantal_stops"] = result_Data["totalNumberOfStops"]
+    retrievedData["maatschappij_naam"] = "Brussels Airlines"
+    retrievedData["vertrek_airport_code"] = retrievedData["departAirportCode"]
+    retrievedData["vertrek_luchthaven_naam"] = None
+    retrievedData["aankomst_airport_code"] = retrievedData["arrivalAirportCode"]
+    retrievedData["aankomst_luchthaven_naam"] = None
+    retrievedData["opgehaald_tijdstip"] = retrievedData["date_data_recieved"]
+    retrievedData["prijs"] = retrievedData["totalPrice"]
+    retrievedData["vrije_plaatsen"] = retrievedData["availableSeats"]
+    retrievedData["flightkey"] = retrievedData["flightId"]
+    retrievedData["vluchtnummer"] = None
+    retrievedData["aankomst_tijdstip"] = retrievedData["arrivalDate"]
+    retrievedData["vertrek_tijdstip"] = retrievedData["depDate"]
+    retrievedData["aantal_stops"] = retrievedData["totalNumberOfStops"]
 
     # Remove all the columns that are not needed
-    # result_Data = result_Data[
-    #     ["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
-    #      "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
-    #      "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
-    #      "vertrek_tijdstip", "aantal_stops"]
-    # ]
-    result_Data = result_Data[
-    ["maatschappij_naam", "vertrek_airport_code",
-        "aankomst_airport_code", "opgehaald_tijdstip",
-        "prijs", "vrije_plaatsen", "vluchtnummer", "aankomst_tijdstip",
-        "vertrek_tijdstip", "aantal_stops"]
+    result_Data = retrievedData[
+        ["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
+         "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
+         "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
+         "vertrek_tijdstip", "aantal_stops"]
     ]
+
     # Open a connection to the database
     database = DataBaseConnection()
     database.connect()
     database.writeDataFrame(result_Data)
     database.disconnect()
+
+    print("Done")
 
 
 if __name__ == "__main__":
