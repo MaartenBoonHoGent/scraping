@@ -1,5 +1,6 @@
 import datetime
 import os
+import traceback
 
 import pandas as pd
 
@@ -51,8 +52,11 @@ class Logger:
         # Create a current timestamp
         timestamp = datetime.datetime.now().timestamp()
 
+        # Convert traceback to string
+        errorTraceback = "".join(traceback.format_tb(error.__traceback__))
+
         # Create a new row
-        newRow = pd.DataFrame([[timestamp, error, error.__traceback__]], columns=["timestamp", "error", "traceback"])
+        newRow = pd.DataFrame([[timestamp, str(error), errorTraceback]], columns=["timestamp", "error", "traceback"])
 
         # Check if the log file exists
         if not os.path.exists(self._errorLogFile):
@@ -61,4 +65,4 @@ class Logger:
 
         else:
             # Append the row to the log file
-            newRow.to_csv([[timestamp,self._errorLogFile]],columns=["timestamp","error"] mode="a", header=False, index=False)
+            newRow.to_csv(self._errorLogFile, mode="a", header=False, index=False)
