@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pandas as pd
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 
 from databaseConnection import DataBaseConnection
@@ -96,9 +96,13 @@ def getFlightData():
                 URL = createUrl(depDate=dateIn.strftime("%Y-%m-%d"),
                                 flyingFrom='BRU',
                                 flyingTo=destination)
-                options = webdriver.ChromeOptions()
+                # options = webdriver.ChromeOptions()
+                # driver_service = Service(executable_path=PATH)
+                # driver = webdriver.Chrome(service=driver_service, options=options)
+                options = webdriver.FirefoxOptions()
                 driver_service = Service(executable_path=PATH)
-                driver = webdriver.Chrome(service=driver_service, options=options)
+                driver = webdriver.Firefox(service=driver_service, options=options)
+                
                 options.add_experimental_option("detach", True)
                 options.add_argument('--ignore-certificate-errors')
                 options.add_argument('--headless')

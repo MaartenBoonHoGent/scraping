@@ -61,4 +61,4 @@ class Logger:
 
         else:
             # Append the row to the log file
-            newRow.to_csv(self._errorLogFile, mode="a", header=False, index=False)
+            newRow.to_csv([[timestamp,self._errorLogFile]],columns=["timestamp","error"] mode="a", header=False, index=False)
