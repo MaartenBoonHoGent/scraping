@@ -34,7 +34,7 @@ class Logger:
 
     def log(self, airline: str, amountOfRows: int = None):
         # Create a current timestamp
-        timestamp = datetime.datetime.now().timestamp()
+        timestamp = datetime.datetime.now().utcnow().isoformat()
 
         # Create a new row
         newRow = pd.DataFrame([[timestamp, airline, amountOfRows]], columns=["timestamp", "airline", "amountOfRows"])
@@ -50,7 +50,7 @@ class Logger:
 
     def logError(self, error: Exception):
         # Create a current timestamp
-        timestamp = datetime.datetime.now().timestamp()
+        timestamp = datetime.datetime.utcnow().isoformat()
 
         # Convert traceback to string
         errorTraceback = "".join(traceback.format_tb(error.__traceback__))
