@@ -1,4 +1,3 @@
-
 import mysql.connector
 import os
 import datetime
@@ -6,6 +5,7 @@ import pandas as pd
 from numpy import datetime64
 
 import json
+
 
 class DataBaseConnection:
     def __init__(self) -> None:
@@ -20,13 +20,11 @@ class DataBaseConnection:
         self._hostName = "127.0.0.1"
         self._buildFile = "database/build.sql"
 
-
-
     # Getters and setters
     @property
     def connection(self):
         return self._connection
-    
+
     @property
     def hostName(self):
         return self._hostName
@@ -60,7 +58,6 @@ class DataBaseConnection:
             database=self._databaseName,
             host=self._hostName
         )
-
 
     def open(self):
         # -------------------------------#
@@ -100,7 +97,8 @@ class DataBaseConnection:
         if self._password == "":
             os.popen("mysql -u " + self._username + " " + self._databaseName + " < " + self._buildFile)
         else:
-            os.popen("mysql -u " + self._username + " -p" + self._password + " " + self._databaseName + " < " + self._buildFile)
+            os.popen(
+                "mysql -u " + self._username + " -p" + self._password + " " + self._databaseName + " < " + self._buildFile)
         self.disconnect()
         self.connect()
 
@@ -140,8 +138,6 @@ class DataBaseConnection:
             "aantal_stops": int,
         }
 
-    
-
         for column in requiredColumns:
             # Check if the column is present
             assert column in dataframe.columns, "Column " + column + " is not present in the dataframe"
@@ -151,13 +147,14 @@ class DataBaseConnection:
                 dataframe[column] = dataframe[column].astype(requiredColumns[column])
             except:
                 # If the conversion fails, raise an error
-                assert dataframe[column].dtype == requiredColumns[column], f"Column {column} is not of the correct type. Expected {requiredColumns[column]}, got {dataframe[column].dtype}"
-        
+                assert dataframe[column].dtype == requiredColumns[
+                    column], f"Column {column} is not of the correct type. Expected {requiredColumns[column]}, got {dataframe[column].dtype}"
+
         dataframe = dataframe[
             ["maatschappij_naam", "vertrek_airport_code", "vertrek_luchthaven_naam",
-            "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
-            "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
-            "vertrek_tijdstip", "aantal_stops"]
+             "aankomst_airport_code", "aankomst_luchthaven_naam", "opgehaald_tijdstip",
+             "prijs", "vrije_plaatsen", "flightkey", "vluchtnummer", "aankomst_tijdstip",
+             "vertrek_tijdstip", "aantal_stops"]
         ]
         # Insert the dataframe into the database using stored procedure 'insert_record'
         cursor = self._connection.cursor()
