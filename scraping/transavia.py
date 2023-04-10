@@ -12,6 +12,7 @@ import datetime
 import time
 import random
 import re
+
 # Get the places where the plane is flying to
 # DESTINATIONS = ['CFU', 'HER', 'RHO', 'BDS', 'NAP', 'PMO', 'FAO', 'ALC', 'IBZ', 'AGP', 'PMI', 'TFS']
 DESTINATIONS = [
@@ -31,9 +32,11 @@ DESTINATIONS = [
 ORIGINS = [['BRU', "Brussel"]]
 now = datetime.datetime.now()
 date = datetime.datetime(2023, 10, 1)
-MONTHS =    (date.year - now.year) * 12 + date.month - now.month
+MONTHS = (date.year - now.year) * 12 + date.month - now.month
 PATH = "C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 HOMEPAGE = "https://www.transavia.com/nl-BE/home/"
+
+
 # Get the data from the website
 
 def createDriver() -> webdriver:
@@ -44,14 +47,16 @@ def createDriver() -> webdriver:
     options.add_experimental_option("detach", True)
     options.add_argument('--ignore-certificate-errors')
     driver_service = Service(executable_path=PATH)
-    driver = webdriver.Chrome(service=driver_service,options=options)
+    driver = webdriver.Chrome(service=driver_service, options=options)
     return driver
+
 
 def wait(n):
     while n > 0:
         print(f"Waiting {n} seconds {' ' * 20}", end="\r")
         time.sleep(1)
         n -= 1
+
 
 def randomEvent(driver):
     # Random event: Get a random number between 1 and 2
@@ -60,7 +65,7 @@ def randomEvent(driver):
     if randomN == 1:
         # Time.sleep for random amount of time
         wait(random.randint(1, 5))
-        
+
     elif randomN == 2:
         # Resize the window
         driver.set_window_size(random.randint(800, 1000), random.randint(800, 1000))
@@ -114,11 +119,10 @@ results = {
     "dateRecorded": [],
 }
 
-
-
 for origin in ORIGINS:
     for destination in DESTINATIONS:
-        originWrapper = driver.find_element(By.CSS_SELECTOR, "div.selectfield-wrapper.HV-gw-delete-row--bp0.AS-counties-and-cities-form-field_field-container")
+        originWrapper = driver.find_element(By.CSS_SELECTOR,
+                                            "div.selectfield-wrapper.HV-gw-delete-row--bp0.AS-counties-and-cities-form-field_field-container")
         originWrapper.click()
 
         # Select the origin
@@ -134,7 +138,9 @@ for origin in ORIGINS:
                 break
 
         # selectfield-wrapper HV-gw-delete-row--bp0 AS-counties-and-cities-form-field_field-container
-        destinationWrapper = driver.find_elements(By.CSS_SELECTOR, "div.selectfield-wrapper.HV-gw-delete-row--bp0.AS-counties-and-cities-form-field_field-container")[1]
+        destinationWrapper = driver.find_elements(By.CSS_SELECTOR,
+                                                  "div.selectfield-wrapper.HV-gw-delete-row--bp0.AS-counties-and-cities-form-field_field-container")[
+            1]
         destinationWrapper.click()
 
         resultsWrapper = destinationWrapper.find_element(By.CSS_SELECTOR, "ol.results")
@@ -153,18 +159,21 @@ for origin in ORIGINS:
             text = element.text
             if text.lower().strip().find("weet je al wanneer je wilt vertrekken?") != -1:
                 driver.execute_script("arguments[0].click();", element)
-                break        
+                break
         for i in range(0, MONTHS):
 
             wait(1)
-            driver.find_element(By.XPATH, '//*[@id="alternativesearch"]/div[4]/div[2]/div/div/div[1]/div/div/div/div[2]/div').click()
+            driver.find_element(By.XPATH,
+                                '//*[@id="alternativesearch"]/div[4]/div[2]/div/div/div[1]/div/div/div/div[2]/div').click()
             driver.find_element(By.XPATH, '//*[@id="data-flight-type"]/option[2]').click()
 
             wait(1)
             # Select the right month
-            driver.find_element(By.XPATH, '//*[@id="alternativesearch"]/div[4]/div[2]/div/div/div[2]/div[1]/div/div/div[1]/div[2]').click()
+            driver.find_element(By.XPATH,
+                                '//*[@id="alternativesearch"]/div[4]/div[2]/div/div/div[2]/div[1]/div/div/div[1]/div[2]').click()
             wait(1)
-            driver.find_element(By.XPATH, f'//*[@id="timeFrameSelection_SingleFlight_SpecificMonth"]/option[{i+1}]').click()
+            driver.find_element(By.XPATH,
+                                f'//*[@id="timeFrameSelection_SingleFlight_SpecificMonth"]/option[{i + 1}]').click()
             wait(1)
             # Select the search button
             driver.find_element(By.XPATH, '//*[@id="alternativesearch"]/div[6]/div[2]/button').click()
@@ -179,13 +188,14 @@ for origin in ORIGINS:
             except:
                 # If the button doesn't exist, then continue
                 continue
-            
+
             # Wait for the flights to load
             wait(2)
             # Get the table with the flights    
             table = driver.find_element(By.CSS_SELECTOR, 'ol.bulletless.AS-time-frame-list')
             # Get all the list elements for 
-            for list_element in table.find_elements(By.CSS_SELECTOR, 'li.AS-time-frame-list_item.toggle-container-level-2.is-closed'):
+            for list_element in table.find_elements(By.CSS_SELECTOR,
+                                                    'li.AS-time-frame-list_item.toggle-container-level-2.is-closed'):
                 # Click on the list element
                 split_text = list_element.text
                 day = re.findall(r'\b\d{1,2}\b', split_text)[0]
@@ -211,10 +221,9 @@ for origin in ORIGINS:
                 results["timeEnd"].append(end_hour)
                 results["dateRecorded"].append(now.strftime("%d-%m-%Y %H:%M:%S"))
 
-        
             df = pd.DataFrame.from_dict(results)
             df.to_csv("transavia.csv", index=False)
-            df.to_csv("./scraping/transavia.csv", index=False)        
-        
-        # Refresh the page
+            df.to_csv("./scraping/transavia.csv", index=False)
+
+            # Refresh the page
         driver.refresh()

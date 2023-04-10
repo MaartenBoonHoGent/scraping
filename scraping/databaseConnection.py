@@ -1,3 +1,5 @@
+import time
+
 import mysql.connector
 import os
 import datetime
@@ -93,13 +95,14 @@ class DataBaseConnection:
         # Create the database
         cursor.execute("CREATE DATABASE IF NOT EXISTS " + self._databaseName)
         cursor.close()
-
-        if self._password == "":
-            os.popen("mysql -u " + self._username + " " + self._databaseName + " < " + self._buildFile)
-        else:
-            os.popen(
-                "mysql -u " + self._username + " -p" + self._password + " " + self._databaseName + " < " + self._buildFile)
         self.disconnect()
+        time.sleep(5)
+        if self._password == "":
+            command = f'mysql --user="{self._username}" --database="{self._databaseName}" < "{self._buildFile}"'
+        else:
+            command = f'mysql --user="{self._username}" --database="{self._databaseName}" --password="{self._password}" < "{self._buildFile}"'
+        os.popen(command) # Somehow performing the command twice makes it work.
+        os.popen(command)
         self.connect()
 
     def writeDataFrame(self, dataframe: pd.DataFrame):
